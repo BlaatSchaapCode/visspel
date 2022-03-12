@@ -1,8 +1,8 @@
 MAKEFILES=make
 include $(MAKEFILES)/make.mk
 
-BUILD_DIR = bld/$(TARGET_OS)
-OUT_DIR =   out/$(TARGET_OS)
+BUILD_DIR = bld/$(TARGET_OS)/$(BUILD_TYPE)
+OUT_DIR =   out/$(TARGET_OS)/$(BUILD_TYPE)
 OUT_EXE = $(OUT_DIR)/$(EXEPRE)visspel$(EXESUF) 
 
 

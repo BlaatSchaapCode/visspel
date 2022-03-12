@@ -14,7 +14,10 @@ endif
 
 CXXFLAGS += -Werror
 CXXFLAGS += -Wall
-CXXFLAGS += --std=gnu++23
+
+# For GCC, gnu++23 and gnu++2b are equivalent, but clang only accepts 2b
+#CXXFLAGS += --std=gnu++23
+CXXFLAGS += --std=gnu++2b
 
 CFLAGS += -Werror
 CFLAGS += -Wall
@@ -25,7 +28,6 @@ ifeq ($(BUILD_TYPE),DEBUG)
 	CXXFLAGS += -O0 # Disable optimisation
 	CFLAGS += -g  # Generate debug information (inside the binary)
 	CFLAGS += -O0 # Disable optimisation
-e
 else 
 	CXXFLAGS += -O2 # Optimise code
 	CXXFLAGS += -D_FORTIFY_SOURCE=2
