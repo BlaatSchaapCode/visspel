@@ -1,4 +1,5 @@
-LDFLAGS += $(shell $(PREFIX)pkg-config --libs libusb-1.0)
-LDFLAGS += -lpthread  
+LDFLAGS += 	$(shell $(PREFIX)pkg-config --libs   sdl)
+INCLUDES += $(shell $(PREFIX)pkg-config --cflags sdl)
 
-INCLUDES += $(shell $(PREFIX)pkg-config --cflags libusb-1.0)
+LDFLAGS += 	$(shell $(PREFIX)pkg-config --libs   libpng)
+INCLUDES += $(shell $(PREFIX)pkg-config --cflags libpng)
