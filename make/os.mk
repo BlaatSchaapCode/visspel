@@ -15,5 +15,3 @@ ifeq ($(TARGET_OS),Windows_NT)
 endif
 
 
-$(info PREFIX:   $(PREFIX))
-$(info EXESUF: $(EXESUF))

@@ -4,31 +4,27 @@ OUT_EXE = $(OUT_DIR)/$(EXEPRE)visspel$(EXESUF)
 
 CXX_OBJ = $(CXX_SRC:%=$(BUILD_DIR)/%.o)
 
-$(info CXX_SRC: $(CXX_SRC))
-$(info CXX_OBJ: $(CXX_OBJ))
 
-default: $(BUILD_DIR) | $(OUT_EXE)
 
-$(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
+default: $(OUT_EXE)
 
 $(OUT_EXE): $(CXX_OBJ)
-	mkdir -p $(OUT_DIR)
-	$(CXX) $(CXX_OBJ) $(CXXFLAGS) $(LDFLAGS) -o$@
+	$(MKDIR_P) $(OUT_DIR)
+	$(LINK) $(CXX_OBJ) $(CXXFLAGS) $(LDFLAGS) -o$@
 
 # asm source
 $(BUILD_DIR)/%.s.o: %.s
-	mkdir -p  $(dir $@)
+	$(MKDIR_P)  $(dir $@)
 	$(AS) $(ASFLAGS) -c $< -o $@
 
 # c source
 $(BUILD_DIR)/%.c.o: %.c
-	mkdir -p  $(dir $@)
+	$(MKDIR_P)  $(dir $@)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 # c++ source
 $(BUILD_DIR)/%.cpp.o: %.cpp
-	mkdir -p  $(dir $@)
+	$(MKDIR_P)  $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 
