@@ -53,16 +53,16 @@ class Version {
     // __clang_version__	// string
 #elif __GNUC__
     // https://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html
-    uint32_t m_compiler_major = __GNUC__;
-    uint32_t m_compiler_minor = __GNUC_MINOR__;
-    uint32_t m_compiler_patch = __GNUC_PATCHLEVEL__;
+    const uint32_t m_compiler_major = __GNUC__;
+    const uint32_t m_compiler_minor = __GNUC_MINOR__;
+    const uint32_t m_compiler_patch = __GNUC_PATCHLEVEL__;
     const std::string m_compiler_name = "GCC";
     // __VERSION__			// string
 #elif _MSC_FULL_VER
     //  https://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros
-    uint32_t m_compiler_major = (_MSC_FULL_VER / 1000000000);
-    uint32_t m_compiler_minor = ((_MSC_FULL_VER / 10000000) % 100);
-    uint32_t m_compiler_patch = (_MSC_FULL_VER % 100000);
+    const uint32_t m_compiler_major = (_MSC_FULL_VER / 1000000000);
+    const uint32_t m_compiler_minor = ((_MSC_FULL_VER / 10000000) % 100);
+    const uint32_t m_compiler_patch = (_MSC_FULL_VER % 100000);
     const std::string m_compiler_name = "MSC";
 #endif
 

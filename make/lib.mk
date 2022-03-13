@@ -7,6 +7,10 @@ INCLUDES += $(shell $(PREFIX)pkg-config --cflags libpng)
 LDFLAGS += 	$(shell $(PREFIX)pkg-config --libs   jsoncpp)
 INCLUDES += $(shell $(PREFIX)pkg-config --cflags jsoncpp)
 
+LDFLAGS += 	$(shell $(PREFIX)pkg-config --libs   cxxopts)
+INCLUDES += $(shell $(PREFIX)pkg-config --cflags cxxopts)
+
+
 # No pkg-config support for imgui
 LDFLAGS += -limgui
 
