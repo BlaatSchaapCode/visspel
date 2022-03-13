@@ -1,3 +1,6 @@
+CXX_SRC 	= $(shell find src -iname "*.cpp")
+CXX_HEADERS = $(shell find src -iname "*.hpp")
+
 BUILD_DIR = bld/$(TARGET_OS)/$(BUILD_TYPE)
 OUT_DIR =   out/$(TARGET_OS)/$(BUILD_TYPE)
 OUT_EXE = $(OUT_DIR)/$(EXEPRE)visspel$(EXESUF) 
