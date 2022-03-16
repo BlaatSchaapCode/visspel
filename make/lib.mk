@@ -5,7 +5,8 @@ LDFLAGS += 	$(shell $(PREFIX)pkg-config --libs   jsoncpp)
 INCLUDES += $(shell $(PREFIX)pkg-config --cflags jsoncpp)
 
 # No pkg-config support for imgui
-LDFLAGS += -limgui
+# Disabled until we have the MSYS2 version ready
+# LDFLAGS += -limgui
 
 
 # Catch2 and cxxopts are header-onlym no libraries to link, so we don't
