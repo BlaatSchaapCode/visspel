@@ -13,5 +13,8 @@ int main(int argc, char *argv[]) {
     std::cout << "Git branch " << version.m_git_branch << 
 			" commit " << version.m_git_commit  << std::endl;; 
 
+    std::cout << "press a key to quit";
+    std::cin.get();
+
     return 0;
 }
