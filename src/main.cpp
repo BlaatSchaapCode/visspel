@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 #include "utils/version.hpp"
 
 #include <iostream>
