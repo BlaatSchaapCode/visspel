@@ -1,13 +1,15 @@
-HOST_OS=$(shell uname)
+HOST_OS=$(shell uname | tr A-Z a-z)
+HOST_MACHINE=$(shell uname -m)
 
 # Under MSYS, uname returns a string like MINGW64_NT-10.0-19043
 # We are not interested in the version, so we replace the string here
-ifneq (,$(findstring MINGW64,$(HOST_OS)))
-	HOST_OS=MINGW64
+ifneq (,$(findstring mingw64,$(HOST_OS)))
+		HOST_OS=mingw
+		TARGET_MACHINE=x86_64
 endif
 
 ifneq (,$(findstring MINGW32,$(HOST_OS)))
-        HOST_OS=MINGW32
+        HOST_OS=mingw
 endif
 
 ifneq (,$(findstring MSYS_NT,$(HOST_OS)))
@@ -16,21 +18,52 @@ endif
 
 
 TARGET_OS?=$(HOST_OS)
-
+TARGET_MACHINE?=$(HOST_MACHINE)
 $(info HOST:   $(HOST_OS))
 $(info TARGET: $(TARGET_OS))
 
-ifeq ($(TARGET_OS),MINGW64)
-	PREFIX=x86_64-w64-mingw32-
+ifneq ($(TARGET_OS),mingw)
+  ifneq ($(HOST_MACHINE),$(TARGET_MACHINE))
+  $(info Cross compilation, Host $(HOST_MACHINE) Target $(TARGET_MACHINE) )
+  ifeq ($(HOST_MACHINE),x86_64)
+    ifeq ($(TARGET_MACHINE),i686)
+      CFLAGS += -m32
+      CXXFLAGS += -m32
+      LDFLAGS += -m32
+      PKG_CONFIG_PATH=/usr/lib32/pkgconfig/
+    else
+      $(error this cross compilation option is not yet supported)
+    endif
+  else
+    $(error this cross compilation option is not yet supported)
+  endif
+endif
+endif
+
+ifeq ($(TARGET_OS),mingw)
 	EXESUF=.exe
 endif
 
-ifeq ($(TARGET_OS),MINGW32)
-	PREFIX=i686-w64-mingw32-
-	EXESUF=.exe
+ifeq ($(COMPILER),gcc) 
+	ifeq ($(TARGET_OS),mingw)
+		ifeq ($(TARGET_MACHINE),x86_64)
+		PREFIX=x86_64-w64-mingw32-
+		endif
+		ifeq ($(TARGET_MACHINE),i686)
+			PREFIX=i686-w64-mingw32-
+		endif
+	endif
+else
+ifeq ($(COMPILER),clang) 
+	ifeq ($(TARGET_OS),mingw)
+		ifeq ($(TARGET_MACHINE),x86_64)
+			CFLAGS += 	-target x86_64-w64-mingw32
+			CXXFLAGS += -target x86_64-w64-mingw32
+		endif
+		ifeq ($(TARGET_MACHINE),i686)
+			CFLAGS += 	-target i686-w64-mingw32
+			CXXFLAGS += -target i686-w64-mingw32
+		endif
+	endif
 endif
-
-ifeq ($(TARGET_OS),MSYS_NT)
-	EXESUF=.exe
 endif
-
