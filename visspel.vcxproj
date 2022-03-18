@@ -35,9 +35,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
+    <ReadOnlyProject>true</ReadOnlyProject>
+    <ReplaceWildcardsInProjectItems>true</ReplaceWildcardsInProjectItems>
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{97fd5dff-26bc-4231-87ff-1b57163b93ee}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{97fd5dff-26bc-4231-87ff-1b57163b93ee}</ProjectGuid>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -50,6 +52,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -61,11 +64,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <OutDir>out/win32/msvc/$(Platform)/$(Configuration)/</OutDir>
+	<OutDir>out/</OutDir>
+    <TargetName>visspel_msvc_win32_$(Platform)_$(Configuration)</TargetName>
     <IntDir>bld/win32/msvc/$(Platform)/$(Configuration)/</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <DisableSpecificWarnings>5105</DisableSpecificWarnings>
@@ -77,8 +82,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src/*.c" />
-    <ClCompile Include="src/*.cpp" />
+    <ClCompile Include="src/**/*.c" />
+    <ClCompile Include="src/**/*.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
