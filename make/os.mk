@@ -67,7 +67,7 @@ ifeq ($(TARGET_OS),mingw)
 endif
 
 ifeq ($(COMPILER),gcc) 
-  ifneq($(HOST_OS),$(TARGET_OS))
+  ifneq ($(HOST_OS),$(TARGET_OS))
     ifeq ($(TARGET_OS),mingw)
       ifeq ($(TARGET_MACHINE),x86_64)
         PREFIX=x86_64-w64-mingw32-
@@ -77,6 +77,7 @@ ifeq ($(COMPILER),gcc)
       endif
     endif
   endif	
+endif
 
 ifeq ($(COMPILER),clang) 
   ifeq ($(TARGET_OS),mingw)

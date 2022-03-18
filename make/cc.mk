@@ -1,4 +1,3 @@
-COMPILER?=gcc
 
 ifeq ($(COMPILER),gcc) 
 	CC=$(PREFIX)gcc
