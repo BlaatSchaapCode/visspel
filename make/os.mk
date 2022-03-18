@@ -1,20 +1,41 @@
 HOST_OS=$(shell uname | tr A-Z a-z)
 HOST_MACHINE=$(shell uname -m)
 
+ifeq ($(MSYSTEM),MINGW32)
+    TARGET_OS=mingw
+	TARGET_MACHINE=i686
+	COMPILER?=gcc
+endif
+
+ifeq ($(MSYSTEM),MINGW64)
+    TARGET_OS=mingw
+	TARGET_MACHINE=x86_64
+	COMPILER?=gcc
+endif
+
+ifeq ($(MSYSTEM),CLANG32)
+    TARGET_OS=mingw
+	TARGET_MACHINE=i686
+	COMPILER?=clang
+endif
+
+ifeq ($(MSYSTEM),CLANG64)
+    TARGET_OS=mingw
+	TARGET_MACHINE=x86_64
+	COMPILER?=clang
+endif
+
+
 # Under MSYS, uname returns a string like MINGW64_NT-10.0-19043
 # We are not interested in the version, so we replace the string here
 ifneq (,$(findstring mingw64,$(HOST_OS)))
 		HOST_OS=mingw
-		TARGET_MACHINE=x86_64
 endif
 
-ifneq (,$(findstring MINGW32,$(HOST_OS)))
+ifneq (,$(findstring mingw32,$(HOST_OS)))
         HOST_OS=mingw
 endif
 
-ifneq (,$(findstring MSYS_NT,$(HOST_OS)))
-        HOST_OS=MSYS_NT
-endif
 
 
 TARGET_OS?=$(HOST_OS)
@@ -40,30 +61,35 @@ ifneq ($(TARGET_OS),mingw)
 endif
 endif
 
+
 ifeq ($(TARGET_OS),mingw)
 	EXESUF=.exe
 endif
 
 ifeq ($(COMPILER),gcc) 
-	ifeq ($(TARGET_OS),mingw)
-		ifeq ($(TARGET_MACHINE),x86_64)
-		PREFIX=x86_64-w64-mingw32-
-		endif
-		ifeq ($(TARGET_MACHINE),i686)
-			PREFIX=i686-w64-mingw32-
-		endif
-	endif
-else
+  ifneq($(HOST_OS),$(TARGET_OS))
+    ifeq ($(TARGET_OS),mingw)
+      ifeq ($(TARGET_MACHINE),x86_64)
+        PREFIX=x86_64-w64-mingw32-
+      endif
+      ifeq ($(TARGET_MACHINE),i686)
+        PREFIX=i686-w64-mingw32-
+      endif
+    endif
+  endif	
+
 ifeq ($(COMPILER),clang) 
-	ifeq ($(TARGET_OS),mingw)
-		ifeq ($(TARGET_MACHINE),x86_64)
-			CFLAGS += 	-target x86_64-w64-mingw32
-			CXXFLAGS += -target x86_64-w64-mingw32
-		endif
-		ifeq ($(TARGET_MACHINE),i686)
-			CFLAGS += 	-target i686-w64-mingw32
-			CXXFLAGS += -target i686-w64-mingw32
-		endif
-	endif
+  ifeq ($(TARGET_OS),mingw)
+    ifeq ($(TARGET_MACHINE),x86_64)
+      CFLAGS   += -target x86_64-w64-mingw32
+      CXXFLAGS += -target x86_64-w64-mingw32
+	  LDFLAGS += -target x86_64-w64-mingw32
+    endif
+    ifeq ($(TARGET_MACHINE),i686)
+      CFLAGS   += -target i686-w64-mingw32
+      CXXFLAGS += -target i686-w64-mingw32
+	  LDFLAGS += -target i686-w64-mingw32
+    endif
+  endif
 endif
-endif
+
