@@ -24,6 +24,21 @@ TcpConnection::TcpConnection(struct sockaddr_in6 sin6, socket_t socket) {
     } else {
         std::cout << "Remote Address is " << str << std::endl;
     }
+
+
+    //--------------------------------------------
+    // Configure socket options for the new socket
+    //--------------------------------------------
+    int no = 0;
+    int yes = 1;
+    // Set timeouts for send and receive in blocking mode
+    const struct timeval tv = {.tv_sec = 0, .tv_usec=100000};
+    setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (const char*) &tv, sizeof(tv));
+    setsockopt(socket, SOL_SOCKET, SO_SNDTIMEO, (const char *)&tv, sizeof(tv));
+    
+    setsockopt(socket, SOL_SOCKET, SO_KEEPALIVE, (const char *)&yes, sizeof(yes));
+    
+
     m_receiveThreadActive = true;
     m_receiveThread = new std::thread(TcpConnection::receiveThreadFunc, this);
 }

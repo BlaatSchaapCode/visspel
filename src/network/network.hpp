@@ -5,6 +5,8 @@
 #include <ws2tcpip.h>
 
 typedef SOCKET socket_t;
+#define poll WSAPoll
+
 #else
 #include <arpa/inet.h>
 #include <errno.h>
@@ -13,10 +15,11 @@ typedef SOCKET socket_t;
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <poll.h>
 
 typedef int socket_t;
-
 #define closesocket close
+
 #endif
 
 #include <cstdint>
