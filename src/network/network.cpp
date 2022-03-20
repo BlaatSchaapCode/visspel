@@ -45,9 +45,11 @@ int listenThread(uint16_t port) {
     // Note: IN6ADDR_ANY_INIT will listen to any IPv4 and IPv6 address
     // This means, it will listen on *ALL* interfaces.
 
-	// Note: This listens on all on Linux, however, the MinGW build running on Wine
-	// listens on IPv6 only. Does it behave the same on Microsoft Windows
-	// and it this the default socket option IPv6 only being set or not possible at all?
+    // https://docs.microsoft.com/en-us/windows/win32/winsock/dual-stack-sockets
+    // 
+    // On Linux, it will listen to both IPv4 and IPv6 by default
+    // On WIN32, it will listen on IPv6 only by default
+
 
     struct sockaddr_in6 sin6_listen = {
         .sin6_family = AF_INET6,
@@ -55,11 +57,15 @@ int listenThread(uint16_t port) {
         .sin6_addr = IN6ADDR_ANY_INIT,
     };
 
-    (void)sin6_listen;
-
     socket_t listen_socket = socket(AF_INET6, SOCK_STREAM, 0);
     if (listen_socket < 0) {
         std::cerr << "Error creating socket" << std::endl;
+        return -1;
+    }
+
+    int no = 0;
+    if (setsockopt(listen_socket, IPPROTO_IPV6, IPV6_V6ONLY, (const char *)&no, sizeof(no))) {
+        std::cerr << "Failed to set socket option" << std::endl;
         return -1;
     }
 
