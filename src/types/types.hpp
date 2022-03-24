@@ -11,5 +11,9 @@ typedef int16_t GridSize;
 
 typedef uint8_t FishCount;
 typedef uint8_t OilCount;
-typedef uint8_t TileType;
+enum class TileType : uint8_t {
+	Grass,
+	ShallowWater,
+	DeepWater,
+};
 } // namespace types

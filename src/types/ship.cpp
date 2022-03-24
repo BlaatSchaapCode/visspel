@@ -2,6 +2,7 @@
 
 #include "ship.hpp"
 #include <algorithm>
+#include <cassert>
 
 namespace types {
 void Ship::catch_fish(FishCount *count) {

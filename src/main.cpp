@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Git branch " << version.m_git_branch << 
 			" commit " << version.m_git_commit  << std::endl;; 
 
-    types::Game game();
+    types::Game game{20,20,4};
 
     std::cout << "press a key to quit";
     std::cin.get();

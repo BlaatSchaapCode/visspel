@@ -1,6 +1,7 @@
 #include "game.hpp"
 
 namespace types {
+Game::Game(GridSize w, GridSize h, PlayerID player_count) : m_map(w, h) { m_players.resize(player_count); }
 ShipID Game::add_ship(Ship ship) {
     ShipID ship_id = m_shipid_autoincrement++;
     add_ship(ship_id, std::move(ship));
@@ -15,7 +16,7 @@ void Game::add_ship(ShipID ship_id, Ship ship) {
 }
 
 void Game::start_turn() {
-    for (auto& [id,ship] : m_ships) {
+    for (auto &[id, ship] : m_ships) {
         ship.start_turn();
     }
 }

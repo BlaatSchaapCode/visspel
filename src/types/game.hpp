@@ -17,6 +17,8 @@ class Game {
     ShipID m_shipid_autoincrement = 0;
 
 public:
+    Game(GridSize w, GridSize h, PlayerID player_count);
+
     ShipID add_ship(Ship);
     void add_ship(ShipID, Ship);
     void start_turn();
