@@ -8,4 +8,8 @@ typedef uint8_t PlayerID;
 typedef uint16_t ShipID;
 typedef int32_t Money;
 typedef int16_t GridSize;
+
+typedef uint8_t FishCount;
+typedef uint8_t OilCount;
+typedef uint8_t TileType;
 } // namespace types

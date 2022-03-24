@@ -4,8 +4,8 @@
 #include <algorithm>
 
 namespace types {
-void Ship::catch_fish(uint32_t *count) {
-    uint32_t catch_count = std::min(*count, m_fish_capacity - m_fish_count);
+void Ship::catch_fish(FishCount *count) {
+    uint32_t catch_count = std::min<uint32_t>(*count, m_fish_capacity - m_fish_count);
     m_fish_count += catch_count;
     *count -= catch_count;
 }
