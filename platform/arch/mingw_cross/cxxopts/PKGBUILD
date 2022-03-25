@@ -1,0 +1,40 @@
+# Maintainer: André van Schoubroeck <andre@blaatschaap.be>
+
+_pkgname=cxxopts
+pkgname=mingw-w64-${_pkgname}
+pkgver=3.0.0
+pkgrel=1
+pkgdesc="Lightweight C++ command line option parser (mingw-w64)"
+arch=('any')
+url="https://github.com/jarro2783/cxxopts"
+license=('MIT')
+makedepends=('mingw-w64-cmake')
+depends=('mingw-w64-crt')
+options=('!strip' '!buildflags' 'staticlibs')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/jarro2783/${_pkgname}/archive/refs/tags/v${pkgver}.tar.gz")
+sha512sums=('239479a3b35ddef6fc380ac9371e1cf7e3aea066f03e1ea538151fa2fff4296838daa976d55e988d8f87f40c0ae027767bcb214754177499413af1081315565c')
+b2sums=('129b055dd03ce9e4a146d36587063f7155b47456d81e395ae6eeab8012e8d6cfcb410c305353f2ac2ec66a2f3e8d6169e1a0d27c53dcb35388b967d3c9cc86f1')
+
+
+_architectures="i686-w64-mingw32 x86_64-w64-mingw32"
+
+
+build() {
+	cd $_pkgname-$pkgver
+	for _arch in ${_architectures}; do
+		mkdir -p build_${_arch}
+		cd build_${_arch}
+		${_arch}-cmake ..
+		cd ..
+	done
+}
+
+package() {
+  cd $_pkgname-$pkgver
+  for _arch in ${_architectures}; do
+	  make VERBOSE=1 DESTDIR="$pkgdir/" install -C build_${_arch}
+	  install -vDm 644 LICENSE -t "${pkgdir}/usr/share/licenses/${pkgname}/"
+	  install -vDm 644 {CHANGELOG,README}.md -t "${pkgdir}/usr/share/doc/${pkgname}/"
+  done
+}
+
