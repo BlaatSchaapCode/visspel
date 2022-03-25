@@ -10,11 +10,13 @@
 
 #include <iostream>
 #include <vector>
+#include <errno.h>
+#include <cstring>
 
 namespace network {
 
 TcpConnection::TcpConnection(socket_t socket) {
-
+    m_socket = socket;
     //--------------------------------------------
     // Configure socket options for the new socket
     //--------------------------------------------
@@ -88,7 +90,7 @@ void TcpConnection::receiveThreadFunc(TcpConnection *_this_) {
         if (bytes_received < 0) {
             // If there is any other error then timeout
             if (EWOULDBLOCK != errno) {
-                std::cerr << "Error reading from socket" << errno << std::endl;
+                std::cerr << "Error reading from socket: " << errno << " " << strerror(errno) << std::endl;
                 break;
             }
             // There is no data
