@@ -8,6 +8,8 @@
 #include <vector>
 #include <thread>
 
+
+
 #include "iconnection.hpp"
 #include "tcpconnection.hpp"
 
@@ -25,7 +27,9 @@ WSADATA d = {0};
 
 void init(void) {
 #if defined(_WIN32) || defined(__WIN32__)
-    WSAStartup(0x0202, &d);
+    if (WSAStartup(0x0202, &d)) {
+        std::cerr << "Error initialising WinSock" << std::endl;
+    }
 #endif
     active = true;
 }
@@ -39,15 +43,21 @@ void deinit(void) {
 
 }
 
+
+
 int listenThread(uint16_t port) {
 	std::cout << "Requested to listen on port " << port << std::endl;
 
     // Note: IN6ADDR_ANY_INIT will listen to any IPv4 and IPv6 address
     // This means, it will listen on *ALL* interfaces.
 
-	// Note: This listens on all on Linux, however, the MinGW build running on Wine
-	// listens on IPv6 only. Does it behave the same on Microsoft Windows
-	// and it this the default socket option IPv6 only being set or not possible at all?
+    // https://docs.microsoft.com/en-us/windows/win32/winsock/dual-stack-sockets
+    // 
+    // On Linux, it will listen to both IPv4 and IPv6 by default
+    // On WIN32, it will listen on IPv6 only by default.
+    // Enabling both IPv4 and IPv6 on the same socket requires at least Windows Vista
+    // I doubt we require Windows XP support
+
 
     struct sockaddr_in6 sin6_listen = {
         .sin6_family = AF_INET6,
@@ -55,20 +65,32 @@ int listenThread(uint16_t port) {
         .sin6_addr = IN6ADDR_ANY_INIT,
     };
 
-    (void)sin6_listen;
-
     socket_t listen_socket = socket(AF_INET6, SOCK_STREAM, 0);
     if (listen_socket < 0) {
         std::cerr << "Error creating socket" << std::endl;
         return -1;
     }
 
+    int no = 0;
+    int yes = 1;
+    if (setsockopt(listen_socket, IPPROTO_IPV6, IPV6_V6ONLY, (const char *)&no, sizeof(no))) {
+        std::cerr << "Failed to set socket option" << std::endl;
+        return -1;
+    }
+
+    if (setsockopt(listen_socket, SOL_SOCKET, SO_REUSEADDR, (const char *)&yes, sizeof(yes))) {
+        std::cerr << "Failed to set socket option" << std::endl;
+        return -1;
+    }
+
+
+
     if (bind(listen_socket, (struct sockaddr *)&sin6_listen, sizeof(sin6_listen)) < 0) {
         std::cerr << "Error binding socket" << std::endl;
         return -1;
     }
 
-    if ( ::listen(listen_socket,5) < 0 ) {
+    if ( ::listen(listen_socket,0) < 0 ) {
     	std::cerr << "Error listening socket" << std::endl;
 		return -1;
     }
@@ -78,16 +100,35 @@ int listenThread(uint16_t port) {
         socklen_t len_accept  = sizeof(sin6_accept);
         memset ( &sin6_accept, 0 , len_accept);
 
-        // TODO: have a timeout on accept, such that we can check the "active"
-        // condition, and terminate if requested
+        const int nfds = 1;
+        struct pollfd fds[nfds] = {{
+            .fd = listen_socket,
+            .events = POLLIN,
+        }};
+        const int timeout_ms = 100;
 
-        socket_t sockfd_accept = accept(listen_socket, (struct sockaddr *)&sin6_accept, &len_accept);
-        if (sockfd_accept < 0) {
-            std::cerr << "Error accepting socket" << std::endl;
-        } else {
-            std::cout << "Accepted Connection" << std::endl;
-            connections.push_back(new TcpConnection(sin6_accept, sockfd_accept));
+        int poll_result = poll(fds, nfds, timeout_ms);
+        if (poll_result > 0) {
+            // There is an incoming connection
+
+            socket_t sockfd_accept = accept(listen_socket, (struct sockaddr *)&sin6_accept, &len_accept);
+            if (sockfd_accept < 0) {
+                std::cerr << "Error accepting socket" << std::endl;
+            } else {
+                std::cout << "Accepted Connection" << std::endl;
+                connections.push_back(new TcpConnection(sin6_accept, sockfd_accept));
+            }
         }
+        if (poll_result < 0) {
+            std::cerr << "Error polling socket" << std::endl;
+            // There is an error
+        } else {
+            // Threre is a timeout.... nothing to do, just wait...and wait....
+        }
+        
+
+
+        
     }
     std::cout << "Closing Listening Socket" << std::endl;
     closesocket (listen_socket);
@@ -103,7 +144,10 @@ int listen(const uint16_t port) {
 }
 
 
-void connect(std::string ip_address, uint16_t port) {}
+void connect(std::string ip_address, uint16_t port) { 
+    (void)port; 
+    (void)ip_address;
+}
 
 void process(void) {}
 
