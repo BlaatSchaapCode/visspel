@@ -8,17 +8,15 @@
 #ifndef SRC_NETWORK_ICONNECTION_HPP_
 #define SRC_NETWORK_ICONNECTION_HPP_
 
-
-namespace network{
+namespace network {
 
 class iConnection {
-public:
-	//virtual ~iConnection(void) = 0;
-	virtual void sendPacket(void) = 0;
-	virtual void process(void) = 0;
+  public:
+    // virtual ~iConnection(void) = 0;
+    virtual void sendPacket(void) = 0;
+    virtual void process(void) = 0;
 };
 
-}
-
+} // namespace network
 
 #endif /* SRC_NETWORK_ICONNECTION_HPP_ */

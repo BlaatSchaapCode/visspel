@@ -12,12 +12,31 @@
 
 namespace network {
 
+TcpConnection::TcpConnection(socket_t socket) {
+
+    //--------------------------------------------
+    // Configure socket options for the new socket
+    //--------------------------------------------
+    const int no = 0;
+    (void)no;
+    const int yes = 1;
+    (void)yes;
+    // Set timeouts for send and receive in blocking mode
+    const struct timeval tv = {.tv_sec = 0, .tv_usec = 100000};
+    setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof(tv));
+    setsockopt(socket, SOL_SOCKET, SO_SNDTIMEO, (const char *)&tv, sizeof(tv));
+
+    setsockopt(socket, SOL_SOCKET, SO_KEEPALIVE, (const char *)&yes, sizeof(yes));
+
+    m_receiveThreadActive = true;
+    m_receiveThread = new std::thread(TcpConnection::receiveThreadFunc, this);
+}
+
 TcpConnection::TcpConnection(struct sockaddr_in6 sin6, socket_t socket) {
     m_sin6 = sin6;
     m_socket = socket;
 
     std::cout << "New TCP Connection" << std::endl;
-
     char str[INET6_ADDRSTRLEN];
     if (inet_ntop(AF_INET6, &sin6.sin6_addr, str, INET6_ADDRSTRLEN) == NULL) {
         std::cerr << "Error parsing remote address" << std::endl;
@@ -25,19 +44,19 @@ TcpConnection::TcpConnection(struct sockaddr_in6 sin6, socket_t socket) {
         std::cout << "Remote Address is " << str << std::endl;
     }
 
-
     //--------------------------------------------
     // Configure socket options for the new socket
     //--------------------------------------------
-    int no = 0;
-    int yes = 1;
+    const int no = 0;
+    (void)no;
+    const int yes = 1;
+    (void)yes;
     // Set timeouts for send and receive in blocking mode
-    const struct timeval tv = {.tv_sec = 0, .tv_usec=100000};
-    setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (const char*) &tv, sizeof(tv));
+    const struct timeval tv = {.tv_sec = 0, .tv_usec = 100000};
+    setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof(tv));
     setsockopt(socket, SOL_SOCKET, SO_SNDTIMEO, (const char *)&tv, sizeof(tv));
-    
+
     setsockopt(socket, SOL_SOCKET, SO_KEEPALIVE, (const char *)&yes, sizeof(yes));
-    
 
     m_receiveThreadActive = true;
     m_receiveThread = new std::thread(TcpConnection::receiveThreadFunc, this);
@@ -64,12 +83,14 @@ void TcpConnection::receiveThreadFunc(TcpConnection *_this_) {
 
     int bytes_received = 0;
     while (_this_->m_receiveThreadActive) {
-        bytes_received = recv(_this_->m_socket, _this_->m_recv_buffer, sizeof(_this_->m_recv_buffer), 0 );
+        bytes_received = recv(_this_->m_socket, _this_->m_recv_buffer, sizeof(_this_->m_recv_buffer), 0);
         if (bytes_received < 0) {
             // If there is any other error then timeout
             if (ETIMEDOUT != bytes_received) {
-                std::cerr << "Error reading from socket" << std::endl;
-                break;
+                // TODO: I guess we are getting "would block"
+                // std::cerr << "Error reading from socket" << std::endl;
+                // break;
+                continue;
             }
         } else if (bytes_received == 0) {
             std::cerr << "Remote disconnected" << std::endl;

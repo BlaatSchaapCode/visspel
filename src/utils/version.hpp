@@ -47,9 +47,7 @@ class Version {
     const std::string m_compiler_full_name = m_compiler_name + " " + std::to_string(m_compiler_major) + "." +
                                              std::to_string(m_compiler_minor) + "." + std::to_string(m_compiler_patch);
 
-
-	const std::string m_git_branch = GIT_BRANCH;
-	const std::string m_git_commit = GIT_COMMIT;
-
+    const std::string m_git_branch = GIT_BRANCH;
+    const std::string m_git_commit = GIT_COMMIT;
 };
 }; // namespace utils

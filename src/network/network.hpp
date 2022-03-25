@@ -12,10 +12,10 @@ typedef SOCKET socket_t;
 #include <errno.h>
 #include <netdb.h>
 #include <netinet/in.h>
+#include <poll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <poll.h>
 
 typedef int socket_t;
 #define closesocket close
@@ -23,10 +23,12 @@ typedef int socket_t;
 #endif
 
 #include <cstdint>
+#include <string>
 
 namespace network {
 
 int listen(const uint16_t port);
+void connect(std::string ip_address, uint16_t port);
 
 void init(void);
 void deinit(void);

@@ -11,7 +11,9 @@
 
 int parse_options(int argc, char *argv[]) {
     try {
-        cxxopts::Options options("Visspel", "A fishing game");
+        cxxopts::Options options(*argv, "A fishing game");
+
+        options.add_options()("h,help", "Display help");
 
         options.add_options()("s,server", "Start as server");
         options.add_options()("c,client", "Start as client");
@@ -19,19 +21,24 @@ int parse_options(int argc, char *argv[]) {
         //		options.add_options() ("4,ipv4", "IPv4 only");
         //		options.add_options() ("6,ipv6", "IPv6 only");
 
-        options.add_options()("h,host", "Host to connect to", cxxopts::value<std::string>());
-        options.add_options()("p,port", "Port to connect to", cxxopts::value<uint16_t>());
+        options.add_options()("H,host", "Host to connect to", cxxopts::value<std::string>()->default_value("127.0.0.1"));
+        options.add_options()("p,port", "Port to connect to/listen on", cxxopts::value<uint16_t>()->default_value("1234"));
 
         auto result = options.parse(argc, argv);
 
+        if (result["help"].as<bool>()) {
+            std::cout << options.help();
+            return 0;
+        }
+
         if (result["server"].as<bool>()) {
             std::cout << "Server requested" << std::endl;
-
             network::listen(result["port"].as<uint16_t>());
         }
 
         if (result["client"].as<bool>()) {
             std::cout << "Client requested" << std::endl;
+            network::connect(result["host"].as<std::string>(), result["port"].as<uint16_t>());
         }
         return 0;
     } catch (const cxxopts::OptionException &e) {
@@ -56,7 +63,6 @@ int main(int argc, char *argv[]) {
 
     std::cout << "press enter to quit" << std::endl;
     std::cin.get();
-
 
     network::deinit();
 
