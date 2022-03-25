@@ -1,0 +1,96 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "(gdb) linux x86_64",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/out/visspel_gcc_linux_x86_64_debug",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description":  "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "(lldb) linux x86_64",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/out/visspel_gcc_linux_x86_64_debug",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "setupCommands": [
+                /*
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description":  "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+                */
+            ]
+        },
+        {
+            /* While this allows debugging windows executables on linux
+            (provided wine and binftm are configured properly)
+            This raises another problem: the windows gdb will report 
+            windows style paths to the source file rather then posix style,
+            thus visual studio code complains it cannot find the source
+            */
+            "name": "(gdb) mingw x86_64",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/out/visspel_gcc_mingw_x86_64_debug.exe",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${fileDirname}",
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "environment": [
+
+            ],
+            "linux": {
+                /* Must use a windows debugger, as the linux debugger 
+                will attach to wine instead of our process launched with wine */
+                "miDebuggerPath": "/usr/x86_64-w64-mingw32/bin/gdb.exe",
+            },
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description":  "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+    ]
+}
