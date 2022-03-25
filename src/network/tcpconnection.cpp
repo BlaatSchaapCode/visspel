@@ -100,6 +100,7 @@ void TcpConnection::receiveThreadFunc(TcpConnection *_this_) {
             // Todo: pass data to parser
             std::cout << "Received " << bytes_received << " bytes " << std::endl;
 
+            // Please note: we want a copy of the data so the receive buffer is available for the next message
             std::vector<uint8_t> received_data(recv_buffer, recv_buffer + bytes_received);
             // When we want to parse this data, we need to identify who sent it
             // Thus this connection needs an identifier.
