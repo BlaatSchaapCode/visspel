@@ -9,6 +9,7 @@
 #include "network.hpp"
 
 #include <iostream>
+#include <vector>
 
 namespace network {
 
@@ -75,7 +76,7 @@ void TcpConnection::process(void) {}
 
 void TcpConnection::receiveThreadFunc(TcpConnection *_this_) {
     std::cout << "Starting Receive Thread" << std::endl;
-
+    char recv_buffer[1024] = {0};
     // TODO: exit conditions
     // Depends on:
     //	* setting  timeouts on sockets
@@ -83,21 +84,28 @@ void TcpConnection::receiveThreadFunc(TcpConnection *_this_) {
 
     int bytes_received = 0;
     while (_this_->m_receiveThreadActive) {
-        bytes_received = recv(_this_->m_socket, _this_->m_recv_buffer, sizeof(_this_->m_recv_buffer), 0);
+        bytes_received = recv(_this_->m_socket, recv_buffer, sizeof(recv_buffer), 0);
         if (bytes_received < 0) {
             // If there is any other error then timeout
-            if (ETIMEDOUT != bytes_received) {
-                // TODO: I guess we are getting "would block"
-                // std::cerr << "Error reading from socket" << std::endl;
-                // break;
-                continue;
+            if (EWOULDBLOCK != errno) {
+                std::cerr << "Error reading from socket" << errno << std::endl;
+                break;
             }
+            // There is no data
+            continue;
         } else if (bytes_received == 0) {
             std::cerr << "Remote disconnected" << std::endl;
             break;
+        } else {
+            // Todo: pass data to parser
+            std::cout << "Received " << bytes_received << " bytes " << std::endl;
+
+            std::vector<uint8_t> received_data(recv_buffer, recv_buffer + bytes_received);
+            // When we want to parse this data, we need to identify who sent it
+            // Thus this connection needs an identifier.
+            // Therefore I think we need a ConnectionManager of some kind
+            parse(received_data);
         }
-        // Todo: pass data to parser
-        std::cout << "Received " << bytes_received << " bytes " << std::endl;
     }
 }
 

@@ -25,7 +25,7 @@ class TcpConnection : public iConnection {
   private:
     struct sockaddr_in6 m_sin6 = {0};
     socket_t m_socket = 0;
-    char m_recv_buffer[1024] = {0};
+
     std::atomic<bool> m_receiveThreadActive = false;
     std::thread *m_receiveThread = nullptr;
 

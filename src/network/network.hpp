@@ -24,6 +24,7 @@ typedef int socket_t;
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 namespace network {
 
@@ -33,5 +34,7 @@ void connect(std::string ip_address, uint16_t port);
 void init(void);
 void deinit(void);
 void process(void);
+
+void parse(std::vector<uint8_t> received_data);
 
 }; // namespace network

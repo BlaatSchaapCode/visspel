@@ -170,6 +170,14 @@ void connect(std::string ip_address, uint16_t port) {
     }
 }
 
+void parse(std::vector<uint8_t> received_data) {
+    puts("Received data: ");
+    for (size_t i = 0; i < received_data.size(); i++) {
+        printf("0x%02X ", received_data[i]);
+    }
+    puts("");
+}
+
 void process(void) {}
 
 }; // namespace network
