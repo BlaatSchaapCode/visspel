@@ -8,6 +8,7 @@
 
 #include "network/network.hpp"
 #include "utils/version.hpp"
+#include "utils/logger.hpp"
 
 int parse_options(int argc, char *argv[]) {
     try {
@@ -52,10 +53,10 @@ int parse_options(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
     int result;
     utils::Version version;
-    std::cout << "Compiled using " << version.m_compiler_full_name << std::endl;
-    std::cout << "Git branch " << version.m_git_branch << " commit " << version.m_git_commit << std::endl;
 
     network::init();
+    LOG("Compiled using %s", version.m_compiler_full_name.c_str());
+    LOG("Git branch %s commit %s", version.m_git_branch.c_str(), version.m_git_commit.c_str());
 
     result = parse_options(argc, argv);
     if (result)
