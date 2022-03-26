@@ -18,6 +18,9 @@ template <std::semiregular T> class Grid {
             elem = value;
     }
 
+    GridSize width() const { return m_width; }
+    GridSize height() const { return m_height; }
+
     T operator[](Point p) const { return m_elems[index(p)]; }
     T &operator[](Point p) { return m_elems[index(p)]; }
 
@@ -27,11 +30,10 @@ template <std::semiregular T> class Grid {
     }
     Point index_inverse(size_t s) const {
         assert(s < m_width * m_height);
-        return {
-            static_cast<size_t>(s % m_width),
-            static_cast<size_t>(s / m_width)
-        };
+        return {static_cast<GridSize>(s % m_width), static_cast<GridSize>(s / m_width)};
     }
+
+    // TODO: Unittests
 
     size_t size() const { return static_cast<size_t>(m_width) * static_cast<size_t>(m_height); }
     std::span<const T> span() const { return std::span(&m_elems[0], size()); }
