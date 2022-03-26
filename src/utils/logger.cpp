@@ -19,7 +19,6 @@ const char *get_label(LogLevel level) {
         return "[TEST_LOG]";
     default:
         return "[LOG]     ";
-
     }
 }
 
