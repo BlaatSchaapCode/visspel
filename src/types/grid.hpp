@@ -4,12 +4,13 @@
 #include <concepts>
 #include <memory>
 #include <span>
+#include <algorithm>
 
 #include "point.hpp"
 #include "types.hpp"
 
 namespace types {
-template <std::semiregular T> class Grid {
+template <std::regular T> class Grid {
   public:
     explicit Grid(GridSize w, GridSize h, T value = {}) : m_width(w), m_height(h) {
         assert(w > 0 && h > 0);
@@ -35,6 +36,9 @@ template <std::semiregular T> class Grid {
 
     // TODO: Unittests
 
+    size_t count(T value) const {
+        return std::ranges::count_if(span(), [value](T obj) { return obj == value; });
+    }
     size_t size() const { return static_cast<size_t>(m_width) * static_cast<size_t>(m_height); }
     std::span<const T> span() const { return std::span(&m_elems[0], size()); }
     std::span<T> span() { return std::span(&m_elems[0], size()); }

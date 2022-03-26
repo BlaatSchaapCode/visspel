@@ -10,8 +10,7 @@ struct Map {
     Map(Map&&) = default;
     Map &operator=(Map&&) = default;
 
-    Grid<FishCount> m_fish;
-    Grid<OilCount> m_oil;
     Grid<TileType> m_tiles;
+    Grid<TileObjectType> m_details;
 };
 } // namespace types
