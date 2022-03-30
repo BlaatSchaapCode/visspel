@@ -12,40 +12,53 @@
 #include <vector>
 #include <errno.h>
 #include <cstring>
+#include <random>
+
+#include "../utils/logger.hpp"
+
 
 namespace network {
 
-TcpConnection::TcpConnection(socket_t socket) {
-    m_socket = socket;
-    //--------------------------------------------
-    // Configure socket options for the new socket
-    //--------------------------------------------
-    const int no = 0;
-    (void)no;
-    const int yes = 1;
-    (void)yes;
-    // Set timeouts for send and receive in blocking mode
-    const struct timeval tv = {.tv_sec = 0, .tv_usec = 100000};
-    setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof(tv));
-    setsockopt(socket, SOL_SOCKET, SO_SNDTIMEO, (const char *)&tv, sizeof(tv));
+//TcpConnection::TcpConnection(socket_t socket) {
+//    m_socket = socket;
+//    //--------------------------------------------
+//    // Configure socket options for the new socket
+//    //--------------------------------------------
+//    const int no = 0;
+//    (void)no;
+//    const int yes = 1;
+//    (void)yes;
+//    // Set timeouts for send and receive in blocking mode
+//    const struct timeval tv = {.tv_sec = 0, .tv_usec = 100000};
+//    setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof(tv));
+//    setsockopt(socket, SOL_SOCKET, SO_SNDTIMEO, (const char *)&tv, sizeof(tv));
+//
+//    setsockopt(socket, SOL_SOCKET, SO_KEEPALIVE, (const char *)&yes, sizeof(yes));
+//
+//    m_receiveThreadActive = true;
+//    m_receiveThread = new std::thread(TcpConnection::receiveThreadFunc, this);
+//}
 
-    setsockopt(socket, SOL_SOCKET, SO_KEEPALIVE, (const char *)&yes, sizeof(yes));
-
-    m_receiveThreadActive = true;
-    m_receiveThread = new std::thread(TcpConnection::receiveThreadFunc, this);
-}
-
-TcpConnection::TcpConnection(struct sockaddr_in6 sin6, socket_t socket) {
+TcpConnection::TcpConnection( socket_t socket, struct sockaddr_in6 sin6) {
     m_sin6 = sin6;
     m_socket = socket;
 
-    std::cout << "New TCP Connection" << std::endl;
+    // Do we need to seed it like with C?
+    std:: minstd_rand simple_rand;
+    simple_rand.seed(time(NULL));
+    m_connection_id = simple_rand();
+
+    LOG_INFO("New TCP Connection",0);
+
     char str[INET6_ADDRSTRLEN];
     if (inet_ntop(AF_INET6, &sin6.sin6_addr, str, INET6_ADDRSTRLEN) == NULL) {
-        std::cerr << "Error parsing remote address" << std::endl;
+
+    	LOG_ERROR("Error parsing remote address",0);
     } else {
-        std::cout << "Remote Address is " << str << std::endl;
+    	LOG_INFO("Remote Address is %s", str);
     }
+
+    std::cout << "Assigned Connection ID " <<  m_connection_id<< std::endl;
 
     //--------------------------------------------
     // Configure socket options for the new socket
@@ -66,14 +79,22 @@ TcpConnection::TcpConnection(struct sockaddr_in6 sin6, socket_t socket) {
 }
 
 TcpConnection::~TcpConnection() {
+	LOG_INFO("Destroying connection %d", m_connection_id);
     m_receiveThreadActive = false;
-    if (m_receiveThread->joinable())
+    LOG_INFO("Stopping receive thread ", 0);
+    if (m_receiveThread->joinable()) {
+    	LOG_INFO("receive thread joinable", 1);
         m_receiveThread->join();
+    } else {
+    	LOG_INFO("receive thread not joinable", 0);
+    }
+    LOG_INFO("Deleting Receive Thread", 0);
     delete m_receiveThread;
+    LOG_INFO("Closing socket", 0);
     closesocket(m_socket);
 }
 
-void TcpConnection::sendPacket(void) {}
+void TcpConnection::sendPacket(std::vector<uint8_t> packet) {}
 void TcpConnection::process(void) {}
 
 void TcpConnection::receiveThreadFunc(TcpConnection *_this_) {
@@ -97,6 +118,7 @@ void TcpConnection::receiveThreadFunc(TcpConnection *_this_) {
             continue;
         } else if (bytes_received == 0) {
             std::cerr << "Remote disconnected" << std::endl;
+            on_disconnect(_this_);
             break;
         } else {
             // Todo: pass data to parser
@@ -107,7 +129,7 @@ void TcpConnection::receiveThreadFunc(TcpConnection *_this_) {
             // When we want to parse this data, we need to identify who sent it
             // Thus this connection needs an identifier.
             // Therefore I think we need a ConnectionManager of some kind
-            parse(received_data);
+            parse(received_data, _this_->m_connection_id);
         }
     }
 }

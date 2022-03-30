@@ -28,6 +28,8 @@ typedef int socket_t;
 
 namespace network {
 
+class TcpConnection;
+
 int listen(const uint16_t port);
 void connect(std::string ip_address, uint16_t port);
 
@@ -35,6 +37,7 @@ void init(void);
 void deinit(void);
 void process(void);
 
-void parse(std::vector<uint8_t> received_data);
+void parse(std::vector<uint8_t> received_data, uint16_t connection_id);
+void on_disconnect(TcpConnection *disconnection);
 
 }; // namespace network

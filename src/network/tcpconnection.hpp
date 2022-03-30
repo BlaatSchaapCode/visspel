@@ -5,21 +5,20 @@
  *      Author: andre
  */
 
-#include "iconnection.hpp"
 #include "network.hpp"
 
 #include <atomic>
 #include <thread>
+#include "connection.hpp"
 
 namespace network {
 
-class TcpConnection : public iConnection {
+class TcpConnection : public Connection {
   public:
-    TcpConnection(struct sockaddr_in6 sin6_accept, socket_t socket);
-    TcpConnection(socket_t socket);
+    TcpConnection(socket_t socket, struct sockaddr_in6 sin6_accept = {0});
     ~TcpConnection();
 
-    void sendPacket(void) override;
+    void sendPacket(std::vector<uint8_t> packet) override;
     void process(void) override;
 
   private:
