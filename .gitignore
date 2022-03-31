@@ -1,4 +1,5 @@
 bld
 out
+include/*
 visspel.vcxproj.user
 .vs

@@ -16,4 +16,6 @@ struct Point {
     Point operator+(const Point &r);
     Point operator-(const Point &r);
 };
+
+const static inline Point NULLPOINT = {-0x7f, -0x7f};
 } // namespace types

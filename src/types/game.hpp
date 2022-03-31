@@ -23,6 +23,9 @@ public:
     std::span<Player> players() { return m_players; }
     std::span<const Player> players() const { return m_players; }
 
+    // TODO: I would like to change this function syntax to return a range
+    const std::unordered_map<ShipID, Ship> ships() const { return m_ships; };
+
 private:
     Map m_map;
     std::vector<Player> m_players;
