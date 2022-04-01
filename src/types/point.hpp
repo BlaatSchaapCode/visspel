@@ -6,8 +6,8 @@
 
 namespace types {
 struct Point {
-    GridSize x = -1;
-    GridSize y = -1;
+    GridSize x = ~0;
+    GridSize y = ~0;
 
     auto operator<=>(const Point &) const = default;
 
@@ -17,5 +17,5 @@ struct Point {
     Point operator-(const Point &r);
 };
 
-const static inline Point NULLPOINT = {-0x7f, -0x7f};
+const static inline Point NULLPOINT = {~0, ~0};
 } // namespace types

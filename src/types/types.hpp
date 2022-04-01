@@ -7,7 +7,7 @@ namespace types {
 typedef uint8_t PlayerID;
 typedef uint16_t ShipID;
 typedef int32_t Money;
-typedef int16_t GridSize;
+typedef uint16_t GridSize;
 
 enum class TileType : uint8_t {
     Grass,
