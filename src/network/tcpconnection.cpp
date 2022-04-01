@@ -68,7 +68,7 @@ TcpConnection::~TcpConnection() {
 }
 
 void TcpConnection::sendPacket(std::vector<uint8_t> packet) {
-    size_t sent_bytes = send(m_socket, packet.data(), packet.size(), 0);
+    size_t sent_bytes = send(m_socket, (const char *)packet.data(), packet.size(), 0);
     if (sent_bytes == packet.size()) {
         LOG_INFO("Sent %d bytes", sent_bytes);
     } else {
