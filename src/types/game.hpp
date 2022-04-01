@@ -1,18 +1,18 @@
 // SPDX-License-Identifier: MIT
 #pragma once
 
-#include <vector>
-#include <unordered_map>
 #include <span>
+#include <unordered_map>
+#include <vector>
 
-#include "types.hpp"
 #include "map.hpp"
 #include "player.hpp"
 #include "ship.hpp"
+#include "types.hpp"
 
 namespace types {
 class Game {
-public:
+  public:
     Game(Map map);
 
     ShipID add_ship(Ship);
@@ -23,7 +23,7 @@ public:
     std::span<Player> players() { return m_players; }
     std::span<const Player> players() const { return m_players; }
 
-private:
+  private:
     Map m_map;
     std::vector<Player> m_players;
     std::unordered_map<ShipID, Ship> m_ships;
