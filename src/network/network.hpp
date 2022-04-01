@@ -28,7 +28,7 @@ typedef int socket_t;
 
 namespace network {
 
-class TcpConnection;
+class Connection;
 
 int listen(const uint16_t port);
 void connect(std::string ip_address, uint16_t port);
@@ -37,7 +37,8 @@ void init(void);
 void deinit(void);
 void process(void);
 
-void parse(std::vector<uint8_t> received_data, uint16_t connection_id);
-void on_disconnect(TcpConnection *disconnection);
+void on_disconnect(Connection *disconnection);
+void on_connect_outgoing(Connection *outgoing_connection);
+void on_connect_incoming(Connection *incoming_connection);
 
 }; // namespace network

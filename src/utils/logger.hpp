@@ -12,7 +12,8 @@
  * - LOG:      Anything that is relevant when reading the logs but is not odd.
  * - WARNING:  Something odd but not nessesary a bug.
  * - ERROR:    A runtime detected problem.
- * - DBG_LOG:  A log message relevant when debugging certain subsystems. These are usually disabled but can be enabled on a file basis.
+ * - DBG_LOG:  A log message relevant when debugging certain subsystems. These are usually disabled but can be enabled on a file
+ * basis.
  * - TEST_LOG: A log message specifically for tests. They will not compile in release, forcing the user to remove it.
  */
 

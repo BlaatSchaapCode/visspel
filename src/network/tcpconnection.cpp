@@ -7,58 +7,31 @@
 
 #include "tcpconnection.hpp"
 #include "network.hpp"
+#include "protocol.hpp"
 
-#include <iostream>
-#include <vector>
-#include <errno.h>
 #include <cstring>
+#include <errno.h>
+#include <iostream>
 #include <random>
+#include <vector>
 
 #include "../utils/logger.hpp"
 
-
 namespace network {
 
-//TcpConnection::TcpConnection(socket_t socket) {
-//    m_socket = socket;
-//    //--------------------------------------------
-//    // Configure socket options for the new socket
-//    //--------------------------------------------
-//    const int no = 0;
-//    (void)no;
-//    const int yes = 1;
-//    (void)yes;
-//    // Set timeouts for send and receive in blocking mode
-//    const struct timeval tv = {.tv_sec = 0, .tv_usec = 100000};
-//    setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof(tv));
-//    setsockopt(socket, SOL_SOCKET, SO_SNDTIMEO, (const char *)&tv, sizeof(tv));
-//
-//    setsockopt(socket, SOL_SOCKET, SO_KEEPALIVE, (const char *)&yes, sizeof(yes));
-//
-//    m_receiveThreadActive = true;
-//    m_receiveThread = new std::thread(TcpConnection::receiveThreadFunc, this);
-//}
-
-TcpConnection::TcpConnection( socket_t socket, struct sockaddr_in6 sin6) {
+TcpConnection::TcpConnection(socket_t socket, struct sockaddr_in6 sin6) {
     m_sin6 = sin6;
     m_socket = socket;
 
-    // Do we need to seed it like with C?
-    std:: minstd_rand simple_rand;
-    simple_rand.seed(time(NULL));
-    m_connection_id = simple_rand();
-
-    LOG_INFO("New TCP Connection",0);
+    LOG_INFO("New TCP Connection", 0);
 
     char str[INET6_ADDRSTRLEN];
     if (inet_ntop(AF_INET6, &sin6.sin6_addr, str, INET6_ADDRSTRLEN) == NULL) {
 
-    	LOG_ERROR("Error parsing remote address",0);
+        LOG_ERROR("Error parsing remote address", 0);
     } else {
-    	LOG_INFO("Remote Address is %s", str);
+        LOG_INFO("Remote Address is %s", str);
     }
-
-    std::cout << "Assigned Connection ID " <<  m_connection_id<< std::endl;
 
     //--------------------------------------------
     // Configure socket options for the new socket
@@ -79,14 +52,14 @@ TcpConnection::TcpConnection( socket_t socket, struct sockaddr_in6 sin6) {
 }
 
 TcpConnection::~TcpConnection() {
-	LOG_INFO("Destroying connection %d", m_connection_id);
+    LOG_INFO("Destroying connection %d", m_client_id);
     m_receiveThreadActive = false;
     LOG_INFO("Stopping receive thread ", 0);
     if (m_receiveThread->joinable()) {
-    	LOG_INFO("receive thread joinable", 1);
+        LOG_INFO("receive thread joinable", 1);
         m_receiveThread->join();
     } else {
-    	LOG_INFO("receive thread not joinable", 0);
+        LOG_INFO("receive thread not joinable", 0);
     }
     LOG_INFO("Deleting Receive Thread", 0);
     delete m_receiveThread;
@@ -94,7 +67,14 @@ TcpConnection::~TcpConnection() {
     closesocket(m_socket);
 }
 
-void TcpConnection::sendPacket(std::vector<uint8_t> packet) {}
+void TcpConnection::sendPacket(std::vector<uint8_t> packet) {
+    size_t sent_bytes = send(m_socket, packet.data(), packet.size(), 0);
+    if (sent_bytes == packet.size()) {
+        LOG_INFO("Sent %d bytes", sent_bytes);
+    } else {
+        LOG_ERROR("Sent %d of %d bytes", sent_bytes, packet.size());
+    }
+}
 void TcpConnection::process(void) {}
 
 void TcpConnection::receiveThreadFunc(TcpConnection *_this_) {
@@ -129,7 +109,7 @@ void TcpConnection::receiveThreadFunc(TcpConnection *_this_) {
             // When we want to parse this data, we need to identify who sent it
             // Thus this connection needs an identifier.
             // Therefore I think we need a ConnectionManager of some kind
-            parse(received_data, _this_->m_connection_id);
+            parse(received_data, _this_);
         }
     }
 }

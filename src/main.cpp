@@ -7,8 +7,8 @@
 #include <cxxopts.hpp>
 
 #include "network/network.hpp"
-#include "utils/version.hpp"
 #include "utils/logger.hpp"
+#include "utils/version.hpp"
 
 int parse_options(int argc, char *argv[]) {
     try {

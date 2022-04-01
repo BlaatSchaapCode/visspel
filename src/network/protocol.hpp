@@ -8,7 +8,9 @@
 #ifndef SRC_NETWORK_PROTOCOL_HPP_
 #define SRC_NETWORK_PROTOCOL_HPP_
 
+#include "connection.hpp"
 #include <cstdint>
+#include <vector>
 
 namespace network {
 
@@ -28,7 +30,7 @@ enum class MessageAction : uint8_t {
 };
 
 enum class MessageStatus : uint8_t {
-	OK = 0x00,
+    OK = 0x00,
 };
 
 typedef struct {
@@ -37,13 +39,17 @@ typedef struct {
     MessageAction action;
     MessageStatus status;
     uint16_t request_id;
-    int : 8; // padding, so we are 64 bit aligned
-} visspel_network_header_t;
+} Header;
 
-typedef struct {
-	uint16_t network_id;
-} visspel_network_connection_id_t;
+typedef uint16_t client_id_t;
 
 #pragma pack(pop)
+
+void parse(std::vector<uint8_t> received_data, Connection *connection);
+void set_connection_id(Connection *con);
+
+void protocol_init(void);
+
 } // namespace network
+
 #endif /* SRC_NETWORK_PROTOCOL_HPP_ */

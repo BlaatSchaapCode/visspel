@@ -7,29 +7,99 @@
 
 #include "protocol.hpp"
 
+#include <functional>
+#include <map>
+#include <string>
 #include <vector>
 
 #include "connection.hpp"
 
+#include "../utils/logger.hpp"
+
 namespace network {
+
+std::map<MessageType, std::function<void(Connection *, Header, std::vector<uint8_t>)>> protocol_handlers;
 
 void request_info() {}
 
-void set_connection_id(Connection *con) {
-	struct {
-		visspel_network_header_t header;
-		visspel_network_connection_id_t connection_id;
-	} message;
+void set_connection_id_handler(Connection *c, Header h, std::vector<uint8_t> d) {
+    switch (h.action) {
+    case MessageAction::Request_Get:
+        break;
+    case MessageAction::Request_Set:
+        if (d.size() == sizeof(client_id_t)) {
+            client_id_t client_id = *(client_id_t *)(d.data());
+            c->m_client_id = client_id;
+            LOG_INFO("We are assigned client ID %d", client_id);
+            break;
+        }
 
-	message.header.size = sizeof(message);
-	message.header.type = MessageType::Info;
-	message.header.action = MessageAction::Request_Set;
-	message.header.status = MessageStatus::OK;
-
-	message.connection_id.network_id = con->m_connection_id;
-
-	std::vector<uint8_t> mess((uint8_t *)&message, ((uint8_t *)&message) + sizeof(message));
-	con->sendPacket(mess);
+        break;
+    default:
+        break;
+    }
 }
+
+void set_connection_id(Connection *con) {
+    LOG_INFO("%s", "Sending Set Connection ID to client");
+    struct {
+        Header header;
+        client_id_t client_id;
+    } message;
+
+    message.header.size = sizeof(message);
+    message.header.type = MessageType::Connection_Id;
+    message.header.action = MessageAction::Request_Set;
+    message.header.status = MessageStatus::OK;
+
+    message.client_id = con->m_client_id;
+
+    std::vector<uint8_t> mess((uint8_t *)&message, ((uint8_t *)&message) + sizeof(message));
+    con->sendPacket(mess);
+}
+
+void parse(std::vector<uint8_t> received_data, Connection *connection) {
+    LOG_DEBUG("%s", "Received data: ");
+    std::string hex;
+    char hexval[6];
+    for (size_t i = 0; i < received_data.size(); i++) {
+        sprintf(hexval, "0x%02X ", received_data[i]);
+        hex += hexval;
+    }
+    LOG_DEBUG("%s", hex.c_str());
+
+    // What is the proper C++ way? I'm a C coder...
+    size_t size = received_data.size();
+    uint32_t offset = 0;
+    if (size < sizeof(Header))
+        return;
+
+    Header *header = (Header *)received_data.data();
+    while (header->size && (header->size + offset) <= size) {
+        LOG_DEBUG("Received packet type %04X of %3d bytes", header->type, header->size);
+        std::vector<uint8_t> payload(received_data.data() + offset + sizeof(Header), received_data.data() + offset + header->size);
+
+        LOG_INFO("Received payload (%d bytes): ", payload.size());
+        hex.clear();
+        for (size_t i = 0; i < payload.size(); i++) {
+            sprintf(hexval, "0x%02X ", payload[i]);
+            hex += hexval;
+        }
+        LOG_DEBUG("%s", hex.c_str());
+
+        auto search = protocol_handlers.find(header->type);
+        if (search != protocol_handlers.end()) {
+            LOG_INFO("This was a client connection", 0);
+            search->second(connection, *header, payload);
+        } else {
+            LOG_ERROR("Message Type Handler not registered", 0);
+        }
+
+        offset += header->size;
+        header = (Header *)received_data.data() + offset;
+    }
+}
+
+void protocol_init(void) { protocol_handlers[MessageType::Connection_Id] = set_connection_id_handler; }
 
 } // namespace network
