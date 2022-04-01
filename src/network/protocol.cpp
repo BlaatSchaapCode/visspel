@@ -25,19 +25,42 @@ void request_info() {}
 void set_connection_id_handler(Connection *c, Header h, std::vector<uint8_t> d) {
     switch (h.action) {
     case MessageAction::Request_Get:
+    	// NOT IMPLEMENTED
+    	send_status(c,h.type, MessageStatus::ERROR_NOT_IMPLEMENTED, h.id);
         break;
     case MessageAction::Request_Set:
         if (d.size() == sizeof(client_id_t)) {
             client_id_t client_id = *(client_id_t *)(d.data());
             c->m_client_id = client_id;
             LOG_INFO("We are assigned client ID %d", client_id);
+            send_status(c,h.type, MessageStatus::OK, h.id);
             break;
         }
-
         break;
+    case MessageAction::Response_Status:
+    	LOG_INFO("Connection ID Status received:  %02X", h.status);
+    	break;
+    case MessageAction::Response_Data:
+    	// NOT IMPLEMENTED
+    	// As Request_Get is not implemented, parsing the response to
+    	// such request is not implemented either
+    	break;
     default:
+    	send_status(c,h.type, MessageStatus::ERROR_BAD_ACTION, h.id);
         break;
     }
+}
+
+void send_status(Connection *con, MessageType type, MessageStatus status, MessageId id) {
+	Header message;
+	message.size = sizeof(message);
+	message.type = type;
+	message.action = MessageAction::Response_Status;
+	message.status = status;
+	message.id = id;
+
+    std::vector<uint8_t> mess((uint8_t *)&message, ((uint8_t *)&message) + sizeof(message));
+    con->sendPacket(mess);
 }
 
 void set_connection_id(Connection *con) {
