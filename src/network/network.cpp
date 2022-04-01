@@ -193,7 +193,8 @@ void on_connect_incoming(Connection *incoming_connection) {
     // If it is seeded on incoming connection, rather then on startup
     // Using the time in seconds has not enough resolution.
     // simple_rand.seed(time(NULL));
-    // Note: cast is to make mscl happy,  warning C4244: 'initializing': conversion from '_Uint' to 'uint16_t', possible loss of data
+    // Note: cast is to make mscl happy,  warning C4244: 'initializing': conversion from '_Uint' to 'uint16_t', possible loss of
+    // data
     uint16_t cid = (uint16_t)simple_rand();
     incoming_connection->m_client_id = cid;
     clientConnections[cid] = incoming_connection;

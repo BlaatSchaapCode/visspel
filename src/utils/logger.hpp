@@ -18,12 +18,9 @@
  */
 
 #ifdef _MSC_FULL_VER
-#define LOG_INFO(format, ...)                                                                                                      \
-    utils::logger::log_impl(utils::logger::LogLevel::Info, __FILE__, __LINE__, format, __VA_ARGS__)
-#define LOG_WARNING(format, ...)                                                                                                   \
-    utils::logger::log_impl(utils::logger::LogLevel::Warning, __FILE__, __LINE__, format, __VA_ARGS__)
-#define LOG_ERROR(format, ...)                                                                                                     \
-    utils::logger::log_impl(utils::logger::LogLevel::Error, __FILE__, __LINE__, format, __VA_ARGS__)
+#define LOG_INFO(format, ...) utils::logger::log_impl(utils::logger::LogLevel::Info, __FILE__, __LINE__, format, __VA_ARGS__)
+#define LOG_WARNING(format, ...) utils::logger::log_impl(utils::logger::LogLevel::Warning, __FILE__, __LINE__, format, __VA_ARGS__)
+#define LOG_ERROR(format, ...) utils::logger::log_impl(utils::logger::LogLevel::Error, __FILE__, __LINE__, format, __VA_ARGS__)
 #else
 #define LOG_INFO(format, ...)                                                                                                      \
     utils::logger::log_impl(utils::logger::LogLevel::Info, __FILE__, __LINE__, format __VA_OPT__(, ) __VA_ARGS__)
