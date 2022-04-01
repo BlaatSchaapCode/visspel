@@ -2,7 +2,7 @@
 #include "game.hpp"
 
 namespace types {
-Game::Game(Map map) : m_map(std::move(map)) { }
+Game::Game(Map map) : m_map(std::move(map)) {}
 
 ShipID Game::add_ship(Ship ship) {
     ShipID ship_id = m_shipid_autoincrement++;

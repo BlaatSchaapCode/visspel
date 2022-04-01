@@ -13,8 +13,9 @@ class Ship {
   public:
     void start_turn();
     bool move(Map* map, Point delta);
-    PlayerID player_id() const { return m_player; }
-    Point pos() const { return m_pos; }
+    inline PlayerID player_id() const { return m_player; }
+    inline Point pos() const { return m_pos; }
+    inline PlayerID player_id() { return m_player; }
 
   private:
     bool move_check(Map *map, Point new_pos) const;

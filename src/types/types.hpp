@@ -10,14 +10,14 @@ typedef int32_t Money;
 typedef int16_t GridSize;
 
 enum class TileType : uint8_t {
-	Grass,
-	ShallowWater,
-	DeepWater,
+    Grass,
+    ShallowWater,
+    DeepWater,
 };
 
 enum class TileObjectType : uint8_t {
-	None,
-	Fish,
-	Oil,
+    None,
+    Fish,
+    Oil,
 };
 } // namespace types

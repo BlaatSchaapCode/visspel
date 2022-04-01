@@ -1,0 +1,114 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build-native",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                
+            ],
+            "group": "build",
+            
+        },
+
+        {
+            "label": "gcc-mingw-i686",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "COMPILER=gcc",
+                "TARGET_OS=mingw",
+                "TARGET_MACHINE=i686",
+            ],
+            "group": "build",
+        },
+
+        {
+            "label": "gcc-mingw-x86_64",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "COMPILER=gcc",
+                "TARGET_OS=mingw",
+                "TARGET_MACHINE=x86_64",
+            ],
+            "group": "build",
+        },
+        {
+            "label": "clang-mingw-i686",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "COMPILER=clang",
+                "TARGET_OS=mingw",
+                "TARGET_MACHINE=i686",
+            ],
+            "group": "build",
+        },
+
+        {
+            "label": "clang-mingw-x86_64",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "COMPILER=clang",
+                "TARGET_OS=mingw",
+                "TARGET_MACHINE=x86_64",
+            ],
+            "group": "build",
+        },
+
+        {
+            "label": "msvc-x86_64-debug",
+            "type": "shell",
+            /* https://code.visualstudio.com/docs/cpp/config-msvc#_run-vs-code-outside-the-developer-command-prompt */
+            "windows": {
+                "options": {
+                  "shell": {
+                    "executable": "cmd.exe",
+                    "args": [
+                      "/C",
+                      "\"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/Tools/VsDevCmd.bat\"",
+                      "&&"
+                    ]
+                  }
+                }
+            },
+
+            "command": "msbuild",
+            "args": [
+                "-p:configuration=debug",
+                "-p:platform=x86-64",
+            ],
+            "group": "build",
+        },
+
+        {
+            "label": "msvc-arm64-release",
+            "type": "shell",
+            /* https://code.visualstudio.com/docs/cpp/config-msvc#_run-vs-code-outside-the-developer-command-prompt */
+            "windows": {
+                "options": {
+                  "shell": {
+                    "executable": "cmd.exe",
+                    "args": [
+                      "/C",
+                      "\"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/Tools/VsDevCmd.bat\"",
+                      "&&"
+                    ]
+                  }
+                }
+            },
+
+            "command": "msbuild",
+            "args": [
+                "-p:configuration=release",
+                "-p:platform=arm64",
+            ],
+            "group": "build",
+        },
+    ]
+}

@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 #pragma once
+#include <algorithm>
 #include <cassert>
 #include <concepts>
 #include <memory>
 #include <span>
-#include <algorithm>
 
 #include "point.hpp"
 #include "types.hpp"
@@ -26,11 +26,11 @@ template <std::regular T> class Grid {
     T &operator[](Point p) { return m_elems[index(p)]; }
 
     size_t index(Point p) const {
-        assert(p.x >= 0 && p.y >= 0 && p.x < m_width && p.y < m_height);
+        assert(p.x >= GridSize(0) && p.y >= GridSize(0) && p.x < m_width && p.y < m_height);
         return static_cast<size_t>(p.x) + static_cast<size_t>(p.y) * static_cast<size_t>(m_width);
     }
     Point index_inverse(size_t s) const {
-        assert(s < m_width * m_height);
+        assert(GridSize(s) < m_width * m_height);
         return {static_cast<GridSize>(s % m_width), static_cast<GridSize>(s / m_width)};
     }
 

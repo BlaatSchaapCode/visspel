@@ -1,3 +1,5 @@
+COMPILER?=gcc
+
 include $(MAKEFILES)/tag.mk
 include $(MAKEFILES)/os.mk
 include $(MAKEFILES)/cc.mk

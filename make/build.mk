@@ -1,27 +1,39 @@
-CXX_SRC 	= $(shell find src -iname "*.cpp")
-CXX_HEADERS = $(shell find src -iname "*.hpp")
+CXX_SRC 	 = $(shell find src -iname "*.cpp")
+CXX_HEADERS  = $(shell find src -iname "*.hpp")
+-DEPENDENCIES = $(shell find $(BUILD_DIR) -iname "*.d")
 
 BUILD_TYPE?=debug
 
 ifeq ($(BUILD_TYPE),debug)
 	CXXFLAGS += -g  # Generate debug information (inside the binary)
 	CXXFLAGS += -O0 # Disable optimisation
+	CXXFLAGS += -D_DEBUG
 	CFLAGS += -g  # Generate debug information (inside the binary)
 	CFLAGS += -O0 # Disable optimisation
+	CFLAGS += -D_DEBUG
 else 
 	CXXFLAGS += -O2 # Optimise code
 	CXXFLAGS += -D_FORTIFY_SOURCE=2
+	CXXFLAGS += -D_RELEASE
 	CFLAGS += -O2 # Optimise code
 	CFLAGS += -D_FORTIFY_SOURCE=2
+	CFLAGS += -D_RELEASE
 endif
 
 
-BUILD_DIR = bld/$(TARGET_OS)/$(BUILD_TYPE)
-OUT_DIR =   out/$(TARGET_OS)/$(BUILD_TYPE)
-OUT_EXE = $(OUT_DIR)/$(EXEPRE)visspel$(EXESUF) 
+BUILD_DIR = bld/$(COMPILER)/$(TARGET_OS)/$(TARGET_MACHINE)/$(BUILD_TYPE)
+#OUT_DIR =   out/$(TARGET_OS)/$(BUILD_TYPE)
+#OUT_EXE = $(OUT_DIR)/$(EXEPRE)visspel$(EXESUF) 
+OUT_DIR =   out
+OUT_EXE = $(OUT_DIR)/$(EXEPRE)visspel_$(COMPILER)_$(TARGET_OS)_$(TARGET_MACHINE)_$(BUILD_TYPE)$(EXESUF) 
 
 CXX_OBJ = $(CXX_SRC:%=$(BUILD_DIR)/%.o)
 
+
+# Generate dependency information
+CFLAGS   +=  -MMD -MP -MF"$(@:%.o=%.d)"
+CXXFLAGS +=  -MMD -MP -MF"$(@:%.o=%.d)"
+ASFLAGS   += -MMD -MP -MF"$(@:%.o=%.d)"
 
 
 default: $(OUT_EXE)
@@ -52,4 +64,5 @@ clean:
 ################################################################################
 # Dependencies
 ################################################################################
--include $(wildcard $(BUILD_DIR)/*.d)
+#-include $(wildcard $(BUILD_DIR)/*.d)
+-include $(DEPENDENCIES)

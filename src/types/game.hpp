@@ -1,27 +1,27 @@
 // SPDX-License-Identifier: MIT
 #pragma once
 
-#include <vector>
-#include <unordered_map>
 #include <span>
+#include <unordered_map>
+#include <vector>
 
-#include "types.hpp"
 #include "map.hpp"
 #include "player.hpp"
 #include "ship.hpp"
+#include "types.hpp"
 
 namespace types {
 class Game {
-public:
+  public:
     Game(Map map);
 
     ShipID add_ship(Ship);
     void add_ship(ShipID, Ship);
     void start_turn();
 
-    const Map &map() const { return m_map; }
-    std::span<Player> players() { return m_players; }
-    std::span<const Player> players() const { return m_players; }
+    inline const Map &map() const { return m_map; }
+    inline std::span<Player> players() { return m_players; }
+    inline std::span<const Player> players() const { return m_players; }
 
     // TODO: I would like to change this function syntax to return a range
     const std::unordered_map<ShipID, Ship> ships() const { return m_ships; };
