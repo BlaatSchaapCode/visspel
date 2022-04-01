@@ -19,9 +19,9 @@ class Game {
     void add_ship(ShipID, Ship);
     void start_turn();
 
-    const Map &map() const { return m_map; }
-    std::span<Player> players() { return m_players; }
-    std::span<const Player> players() const { return m_players; }
+    inline const Map &map() const { return m_map; }
+    inline std::span<Player> players() { return m_players; }
+    inline std::span<const Player> players() const { return m_players; }
 
   private:
     Map m_map;
