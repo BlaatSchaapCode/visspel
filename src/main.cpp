@@ -1,12 +1,20 @@
 // SPDX-License-Identifier: MIT
 
+
+// C++ Library Includes
 #include <cstdint>
 #include <iostream>
 #include <string>
 
+
+// Library Includes
 #include <cxxopts.hpp>
 
+
+// Game includes
 #include "network/network.hpp"
+#include "procgen/gamegen.hpp"
+#include "types/game.hpp"
 #include "utils/logger.hpp"
 #include "utils/version.hpp"
 
@@ -55,14 +63,22 @@ int main(int argc, char *argv[]) {
     utils::Version version;
 
     network::init();
-    LOG_INFO("Compiled using %s", version.m_compiler_full_name.c_str());
-    LOG_INFO("Git branch %s commit %s", version.m_git_branch.c_str(), version.m_git_commit.c_str());
 
     result = parse_options(argc, argv);
     if (result)
         return result;
 
-    std::cout << "press enter to quit" << std::endl;
+    types::Game game = procgen::make_game(3);
+
+    std::cout << "Game map size: " << game.map().m_tiles.width() << " x " << game.map().m_tiles.height() << std::endl;
+    std::cout << "Number of players: " << game.players().size() << std::endl;
+    std::cout << "Number of fish: " << game.map().m_details.count(types::TileObjectType::Fish) << std::endl;
+    std::cout << "Number of oil: " << game.map().m_details.count(types::TileObjectType::Oil) << std::endl;
+
+    LOG_INFO("Compiled using %s", version.m_compiler_full_name.c_str());
+    LOG_INFO("Git branch %s commit %s", version.m_git_branch.c_str(), version.m_git_commit.c_str());
+
+    std::cout << "press a key to quit";
     std::cin.get();
 
     network::deinit();

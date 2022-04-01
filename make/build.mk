@@ -7,13 +7,17 @@ BUILD_TYPE?=debug
 ifeq ($(BUILD_TYPE),debug)
 	CXXFLAGS += -g  # Generate debug information (inside the binary)
 	CXXFLAGS += -O0 # Disable optimisation
+	CXXFLAGS += -D_DEBUG
 	CFLAGS += -g  # Generate debug information (inside the binary)
 	CFLAGS += -O0 # Disable optimisation
+	CFLAGS += -D_DEBUG
 else 
 	CXXFLAGS += -O2 # Optimise code
 	CXXFLAGS += -D_FORTIFY_SOURCE=2
+	CXXFLAGS += -D_RELEASE
 	CFLAGS += -O2 # Optimise code
 	CFLAGS += -D_FORTIFY_SOURCE=2
+	CFLAGS += -D_RELEASE
 endif
 
 
