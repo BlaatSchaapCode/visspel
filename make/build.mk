@@ -1,5 +1,6 @@
-CXX_SRC 	= $(shell find src -iname "*.cpp")
-CXX_HEADERS = $(shell find src -iname "*.hpp")
+CXX_SRC 	 = $(shell find src -iname "*.cpp")
+CXX_HEADERS  = $(shell find src -iname "*.hpp")
+-DEPENDENCIES = $(shell find $(BUILD_DIR) -iname "*.d")
 
 BUILD_TYPE?=debug
 
@@ -24,6 +25,11 @@ OUT_EXE = $(OUT_DIR)/$(EXEPRE)visspel_$(COMPILER)_$(TARGET_OS)_$(TARGET_MACHINE)
 
 CXX_OBJ = $(CXX_SRC:%=$(BUILD_DIR)/%.o)
 
+
+# Generate dependency information
+CFLAGS   +=  -MMD -MP -MF"$(@:%.o=%.d)"
+CXXFLAGS +=  -MMD -MP -MF"$(@:%.o=%.d)"
+ASFLAGS   += -MMD -MP -MF"$(@:%.o=%.d)"
 
 
 default: $(OUT_EXE)
@@ -54,4 +60,5 @@ clean:
 ################################################################################
 # Dependencies
 ################################################################################
--include $(wildcard $(BUILD_DIR)/*.d)
+#-include $(wildcard $(BUILD_DIR)/*.d)
+-include $(DEPENDENCIES)
