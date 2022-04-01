@@ -64,7 +64,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <OutDir>out/win32/msvc/$(Platform)/$(Configuration)/</OutDir>
+	<OutDir>out/</OutDir>
+    <TargetName>visspel_msvc_win32_$(Platform)_$(Configuration)</TargetName>
     <IntDir>bld/win32/msvc/$(Platform)/$(Configuration)/</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
