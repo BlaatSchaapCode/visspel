@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 #pragma once
+#include <algorithm>
 #include <cassert>
 #include <concepts>
 #include <memory>
 #include <span>
-#include <algorithm>
 
 #include "point.hpp"
 #include "types.hpp"

@@ -41,7 +41,7 @@ void set_connection_id_handler(Connection *c, Header h, std::vector<uint8_t> d) 
 }
 
 void set_connection_id(Connection *con) {
-    LOG_INFO( "Sending Set Connection ID to client");
+    LOG_INFO("Sending Set Connection ID to client");
     struct {
         Header header;
         client_id_t client_id;

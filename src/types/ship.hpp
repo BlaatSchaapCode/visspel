@@ -12,7 +12,7 @@ struct Map;
 class Ship {
   public:
     void start_turn();
-    bool move(Map* map, Point delta);
+    bool move(Map *map, Point delta);
     PlayerID player_id() { return m_player; }
 
   private:

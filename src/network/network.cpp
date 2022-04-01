@@ -35,7 +35,7 @@ WSADATA d = {0};
 void init(void) {
 #if defined(_WIN32) || defined(__WIN32__)
     if (WSAStartup(0x0202, &d)) {
-        std::cerr << "Error initialising WinSock" << std::endl;
+        LOG_ERROR("Error initialising WinSock");
     }
 #endif
 
@@ -53,7 +53,7 @@ void deinit(void) {
 }
 
 int listenThread(uint16_t port) {
-    std::cout << "Requested to listen on port " << port << std::endl;
+    LOG_INFO("Requested to listen on port %d", port);
 
     // Note: IN6ADDR_ANY_INIT will listen to any IPv4 and IPv6 address
     // This means, it will listen on *ALL* interfaces.
@@ -73,29 +73,29 @@ int listenThread(uint16_t port) {
 
     socket_t listen_socket = socket(AF_INET6, SOCK_STREAM, 0);
     if (listen_socket < 0) {
-        std::cerr << "Error creating socket" << std::endl;
+        LOG_ERROR("Error creating socket");
         return -1;
     }
 
     int no = 0;
     int yes = 1;
     if (setsockopt(listen_socket, IPPROTO_IPV6, IPV6_V6ONLY, (const char *)&no, sizeof(no))) {
-        std::cerr << "Failed to set socket option" << std::endl;
+        LOG_ERROR("Failed to set socket option");
         return -1;
     }
 
     if (setsockopt(listen_socket, SOL_SOCKET, SO_REUSEADDR, (const char *)&yes, sizeof(yes))) {
-        std::cerr << "Failed to set socket option" << std::endl;
+        LOG_ERROR("Failed to set socket option");
         return -1;
     }
 
     if (bind(listen_socket, (struct sockaddr *)&sin6_listen, sizeof(sin6_listen)) < 0) {
-        std::cerr << "Error binding socket" << std::endl;
+        LOG_ERROR("Error binding socket");
         return -1;
     }
 
     if (::listen(listen_socket, 0) < 0) {
-        std::cerr << "Error listening socket" << std::endl;
+        LOG_ERROR("Error listening socket");
         return -1;
     }
 
@@ -117,9 +117,9 @@ int listenThread(uint16_t port) {
 
             socket_t sockfd_accept = accept(listen_socket, (struct sockaddr *)&sin6_accept, &len_accept);
             if (sockfd_accept < 0) {
-                std::cerr << "Error accepting socket" << std::endl;
+                LOG_ERROR("Error accepting socket");
             } else {
-                std::cout << "Accepted Connection" << std::endl;
+                LOG_INFO("Accepted Connection");
 
                 // TODO :: let's make a map out of this rather then a vector
                 // As we want to get the connection by its ID
@@ -127,13 +127,13 @@ int listenThread(uint16_t port) {
             }
         }
         if (poll_result < 0) {
-            LOG_ERROR( "Error polling socket" );
+            LOG_ERROR("Error polling socket");
             // There is an error
         } else {
             // Threre is a timeout.... nothing to do, just wait...and wait....
         }
     }
-    std::cout << "Closing Listening Socket" << std::endl;
+    LOG_INFO("Closing Listening Socket");
     closesocket(listen_socket);
     return 0;
 }
@@ -146,7 +146,7 @@ int listen(const uint16_t port) {
 }
 
 void connect(std::string ip_address, uint16_t port) {
-    std::cout << "Requested to connect to " << ip_address << ":" << port << std::endl;
+    LOG_INFO("Requested to connect to %s:%d", ip_address.c_str(), port);
 
     struct sockaddr_in6 sin6_connect = {
         .sin6_family = AF_INET6,
@@ -163,24 +163,24 @@ void connect(std::string ip_address, uint16_t port) {
     if (1 == inet_pton(AF_INET6, ip_address.c_str(), &sin6_connect.sin6_addr)) {
         connect_socket = socket(AF_INET6, SOCK_STREAM, 0);
         if (connect_socket < 0) {
-            std::cerr << "Error creating socket" << std::endl;
+            LOG_ERROR("Error creating socket");
             return;
         }
         if (connect(connect_socket, (struct sockaddr *)&sin6_connect, sizeof(sin6_connect)) < 0) {
-            std::cout << "Failed to connect" << std::endl;
+            LOG_INFO("Failed to connect");
             return;
         }
     } else if (1 == inet_pton(AF_INET, ip_address.c_str(), &sin4_connect.sin_addr)) {
         connect_socket = socket(AF_INET, SOCK_STREAM, 0);
         if (connect_socket < 0) {
-            std::cerr << "Error creating socket" << std::endl;
+            LOG_ERROR("Error creating socket");
             return;
         }
         if (connect(connect_socket, (struct sockaddr *)&sin4_connect, sizeof(sin4_connect)) < 0) {
-            std::cout << "Failed to connect" << std::endl;
+            LOG_INFO("Failed to connect");
             return;
         }
-        std::cout << "Connected" << std::endl;
+        LOG_INFO("Connected");
         on_connect_outgoing(new TcpConnection(connect_socket));
     }
 }

@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <vector>
 #include <cstdint>
+#include <vector>
 
 #include "protocol.hpp"
 

@@ -5,9 +5,6 @@
 #include <cstdio>
 #include <string_view>
 
-
-
-
 /*
  * How to use logging:
  * For logging we use printf like macro's.
@@ -20,18 +17,23 @@
  * - TEST_LOG: A log message specifically for tests. They will not compile in release, forcing the user to remove it.
  */
 
-#define LOG_INFO(format, ...) utils::logger::log_impl(utils::logger::LogLevel::Info, __FILE__, __LINE__, format __VA_OPT__(,) __VA_ARGS__)
-#define LOG_WARNING(format, ...) utils::logger::log_impl(utils::logger::LogLevel::Warning, __FILE__, __LINE__, format __VA_OPT__(,) __VA_ARGS__)
-#define LOG_ERROR(format, ...) utils::logger::log_impl(utils::logger::LogLevel::Error, __FILE__, __LINE__, format __VA_OPT__(,) __VA_ARGS__)
+#define LOG_INFO(format, ...)                                                                                                      \
+    utils::logger::log_impl(utils::logger::LogLevel::Info, __FILE__, __LINE__, format __VA_OPT__(, ) __VA_ARGS__)
+#define LOG_WARNING(format, ...)                                                                                                   \
+    utils::logger::log_impl(utils::logger::LogLevel::Warning, __FILE__, __LINE__, format __VA_OPT__(, ) __VA_ARGS__)
+#define LOG_ERROR(format, ...)                                                                                                     \
+    utils::logger::log_impl(utils::logger::LogLevel::Error, __FILE__, __LINE__, format __VA_OPT__(, ) __VA_ARGS__)
 
 #ifdef ENABLE_LOG_DEBUG
-#define LOG_DEBUG(format, ...) utils::logger::log_impl(utils::logger::LogLevel::DebugLog, __FILE__, __LINE__, format __VA_OPT__(,) __VA_ARGS__)
+#define LOG_DEBUG(format, ...)                                                                                                     \
+    utils::logger::log_impl(utils::logger::LogLevel::DebugLog, __FILE__, __LINE__, format __VA_OPT__(, ) __VA_ARGS__)
 #else
 #define LOG_DEBUG(format, ...)
 #endif
 
 #ifdef _DEBUG
-#define LOG_TEST(format, ...) utils::logger::log_impl(utils::logger::LogLevel::TestLog, __FILE__, __LINE__, format __VA_OPT__(,) __VA_ARGS__)
+#define LOG_TEST(format, ...)                                                                                                      \
+    utils::logger::log_impl(utils::logger::LogLevel::TestLog, __FILE__, __LINE__, format __VA_OPT__(, ) __VA_ARGS__)
 #endif
 
 namespace utils::logger {

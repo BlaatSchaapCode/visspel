@@ -78,7 +78,7 @@ void TcpConnection::sendPacket(std::vector<uint8_t> packet) {
 void TcpConnection::process(void) {}
 
 void TcpConnection::receiveThreadFunc(TcpConnection *_this_) {
-    std::cout << "Starting Receive Thread" << std::endl;
+    LOG_INFO("Starting Receive Thread");
     char recv_buffer[1024] = {0};
     // TODO: exit conditions
     // Depends on:
@@ -91,18 +91,18 @@ void TcpConnection::receiveThreadFunc(TcpConnection *_this_) {
         if (bytes_received < 0) {
             // If there is any other error then timeout
             if (EWOULDBLOCK != errno) {
-                std::cerr << "Error reading from socket: " << errno << " " << strerror(errno) << std::endl;
+                LOG_ERROR("Error reading from socket %d: %s ", errno, strerror(errno));
                 break;
             }
             // There is no data
             continue;
         } else if (bytes_received == 0) {
-            std::cerr << "Remote disconnected" << std::endl;
+            LOG_ERROR("Remote disconnected");
             on_disconnect(_this_);
             break;
         } else {
             // Todo: pass data to parser
-            std::cout << "Received " << bytes_received << " bytes " << std::endl;
+            LOG_INFO("Received %d bytes ", bytes_received);
 
             // Please note: we want a copy of the data so the receive buffer is available for the next message
             std::vector<uint8_t> received_data(recv_buffer, recv_buffer + bytes_received);
