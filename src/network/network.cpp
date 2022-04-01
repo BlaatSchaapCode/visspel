@@ -127,7 +127,7 @@ int listenThread(uint16_t port) {
             }
         }
         if (poll_result < 0) {
-            std::cerr << "Error polling socket" << std::endl;
+            LOG_ERROR( "Error polling socket" );
             // There is an error
         } else {
             // Threre is a timeout.... nothing to do, just wait...and wait....
@@ -208,15 +208,15 @@ void on_disconnect(Connection *disconnection) {
     auto on_disconnect_lambda = [disconnection]() {
         LOG_INFO("on disconnect called for connection %d", disconnection->m_client_id);
         if (disconnection == serverConnection) {
-            LOG_INFO("This was the server connection", 0);
+            LOG_INFO("This was the server connection");
             serverConnection = nullptr;
         } else {
             auto search = clientConnections.find(disconnection->m_client_id);
             if (search != clientConnections.end()) {
-                LOG_INFO("This was a client connection", 0);
+                LOG_INFO("This was a client connection");
                 clientConnections.erase(disconnection->m_client_id);
             } else {
-                LOG_ERROR("This was an unknown connection", 0);
+                LOG_ERROR("This was an unknown connection");
             }
         }
         delete disconnection;

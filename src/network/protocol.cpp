@@ -41,7 +41,7 @@ void set_connection_id_handler(Connection *c, Header h, std::vector<uint8_t> d) 
 }
 
 void set_connection_id(Connection *con) {
-    LOG_INFO("%s", "Sending Set Connection ID to client");
+    LOG_INFO( "Sending Set Connection ID to client");
     struct {
         Header header;
         client_id_t client_id;
@@ -59,14 +59,14 @@ void set_connection_id(Connection *con) {
 }
 
 void parse(std::vector<uint8_t> received_data, Connection *connection) {
-    LOG_DEBUG("%s", "Received data: ");
+    LOG_DEBUG("Received data: ");
     std::string hex;
     char hexval[6];
     for (size_t i = 0; i < received_data.size(); i++) {
         sprintf(hexval, "0x%02X ", received_data[i]);
         hex += hexval;
     }
-    LOG_DEBUG("%s", hex.c_str());
+    LOG_DEBUG(hex.c_str());
 
     // What is the proper C++ way? I'm a C coder...
     size_t size = received_data.size();
@@ -89,10 +89,10 @@ void parse(std::vector<uint8_t> received_data, Connection *connection) {
 
         auto search = protocol_handlers.find(header->type);
         if (search != protocol_handlers.end()) {
-            LOG_INFO("This was a client connection", 0);
+            LOG_INFO("This was a client connection");
             search->second(connection, *header, payload);
         } else {
-            LOG_ERROR("Message Type Handler not registered", 0);
+            LOG_ERROR("Message Type Handler not registered");
         }
 
         offset += header->size;
