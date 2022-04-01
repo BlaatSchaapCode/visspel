@@ -68,7 +68,7 @@ TcpConnection::~TcpConnection() {
 }
 
 void TcpConnection::sendPacket(std::vector<uint8_t> packet) {
-    size_t sent_bytes = send(m_socket, (const char *)packet.data(), packet.size(), 0);
+    size_t sent_bytes = send(m_socket, (const char *)packet.data(), (int)packet.size(), 0);
     if (sent_bytes == packet.size()) {
         LOG_INFO("Sent %d bytes", sent_bytes);
     } else {
@@ -91,7 +91,13 @@ void TcpConnection::receiveThreadFunc(TcpConnection *_this_) {
         if (bytes_received < 0) {
             // If there is any other error then timeout
             if (EWOULDBLOCK != errno) {
+#ifdef _MSC_FULL_VER
+                char buffer[120];
+                strerror_s(buffer, sizeof(buffer), errno);
+                LOG_ERROR("Error reading from socket %d: %s ", errno, buffer);
+#else
                 LOG_ERROR("Error reading from socket %d: %s ", errno, strerror(errno));
+#endif
                 break;
             }
             // There is no data

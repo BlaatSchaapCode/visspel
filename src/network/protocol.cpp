@@ -86,7 +86,11 @@ void parse(std::vector<uint8_t> received_data, Connection *connection) {
     std::string hex;
     char hexval[6];
     for (size_t i = 0; i < received_data.size(); i++) {
+#ifdef _MSC_FULL_VER
+        sprintf_s(hexval, sizeof(hexval), "0x%02X ", received_data[i]);
+#else
         sprintf(hexval, "0x%02X ", received_data[i]);
+#endif
         hex += hexval;
     }
     LOG_DEBUG(hex.c_str());
@@ -105,7 +109,11 @@ void parse(std::vector<uint8_t> received_data, Connection *connection) {
         LOG_INFO("Received payload (%d bytes): ", payload.size());
         hex.clear();
         for (size_t i = 0; i < payload.size(); i++) {
+#ifdef _MSC_FULL_VER
+            sprintf_s(hexval, sizeof(hexval), "0x%02X ", payload[i]);
+#else
             sprintf(hexval, "0x%02X ", payload[i]);
+#endif
             hex += hexval;
         }
         LOG_DEBUG("%s", hex.c_str());
