@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
     LOG_INFO("Compiled using %s", version.m_compiler_full_name.c_str());
     LOG_INFO("Git branch %s commit %s", version.m_git_branch.c_str(), version.m_git_commit.c_str());
 
-    LOG_INFO(" "press a key to quit");
+    LOG_INFO("press ENTER key to quit");
     std::cin.get();
 
     network::deinit();
