@@ -188,11 +188,7 @@ void connect(std::string ip_address, uint16_t port) {
 void on_connect_outgoing(Connection *outgoing_connection) { serverConnection = outgoing_connection; }
 
 void on_connect_incoming(Connection *incoming_connection) {
-    std::minstd_rand simple_rand;
-    // Does it require C-style seeing?
-    // If it is seeded on incoming connection, rather then on startup
-    // Using the time in seconds has not enough resolution.
-    // simple_rand.seed(time(NULL));
+	std::random_device simple_rand;
     // Note: cast is to make mscl happy,  warning C4244: 'initializing': conversion from '_Uint' to 'uint16_t', possible loss of
     // data
     uint16_t cid = (uint16_t)simple_rand();
