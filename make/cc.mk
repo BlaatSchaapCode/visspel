@@ -1,13 +1,12 @@
-COMPILER?=GCC
 
-ifeq ($(COMPILER),GCC) 
+ifeq ($(COMPILER),gcc) 
 	CC=$(PREFIX)gcc
 	CXX=$(PREFIX)g++
 	LINK=$(CXX)
 else
-ifeq ($(COMPILER),CLANG) 
-	CC=$(PREFIX)clang
-	CXX=$(PREFIX)clang++
+ifeq ($(COMPILER),clang) 
+	CC=clang
+	CXX=clang++
 	LINK=$(CXX)
 endif
 endif
