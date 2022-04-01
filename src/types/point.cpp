@@ -3,7 +3,7 @@
 #include "point.hpp"
 
 namespace types {
-Point& Point::operator+=(const Point &r) {
+Point &Point::operator+=(const Point &r) {
     x += r.x;
     y += r.y;
     return *this;

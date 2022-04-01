@@ -59,8 +59,56 @@
                 "TARGET_MACHINE=x86_64",
             ],
             "group": "build",
-        }
+        },
 
+        {
+            "label": "msvc-x86_64-debug",
+            "type": "shell",
+            /* https://code.visualstudio.com/docs/cpp/config-msvc#_run-vs-code-outside-the-developer-command-prompt */
+            "windows": {
+                "options": {
+                  "shell": {
+                    "executable": "cmd.exe",
+                    "args": [
+                      "/C",
+                      "\"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/Tools/VsDevCmd.bat\"",
+                      "&&"
+                    ]
+                  }
+                }
+            },
 
+            "command": "msbuild",
+            "args": [
+                "-p:configuration=debug",
+                "-p:platform=x86-64",
+            ],
+            "group": "build",
+        },
+
+        {
+            "label": "msvc-arm64-release",
+            "type": "shell",
+            /* https://code.visualstudio.com/docs/cpp/config-msvc#_run-vs-code-outside-the-developer-command-prompt */
+            "windows": {
+                "options": {
+                  "shell": {
+                    "executable": "cmd.exe",
+                    "args": [
+                      "/C",
+                      "\"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/Tools/VsDevCmd.bat\"",
+                      "&&"
+                    ]
+                  }
+                }
+            },
+
+            "command": "msbuild",
+            "args": [
+                "-p:configuration=release",
+                "-p:platform=arm64",
+            ],
+            "group": "build",
+        },
     ]
 }

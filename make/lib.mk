@@ -15,3 +15,7 @@ INCLUDES += $(shell $(PREFIX)pkg-config --cflags jsoncpp)
 INCLUDES += $(shell pkg-config --cflags catch2)
 INCLUDES += $(shell pkg-config --cflags cxxopts)
 
+ifeq ($(TARGET_OS),mingw)
+	LDFLAGS += -lws2_32
+endif
+
