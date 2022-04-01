@@ -7,7 +7,12 @@
 
 #include "types/game.hpp"
 
+#include "window/renderer/camera.hpp"
+#include "window/renderer/sdl_renderer.hpp"
+
 //#include <cxxopts.hpp>
+
+namespace r = window::renderer;
 
 int main(int argc, char *argv[]) {
     utils::Version version;
@@ -21,6 +26,11 @@ int main(int argc, char *argv[]) {
     std::cout << "Number of players: " << game.players().size() << std::endl;
     std::cout << "Number of fish: " << game.map().m_details.count(types::TileObjectType::Fish) << std::endl;
     std::cout << "Number of oil: " << game.map().m_details.count(types::TileObjectType::Oil) << std::endl;
+
+    r::SDLRenderer renderer(
+        r::Camera(r::CameraConfig{.m_type = r::CameraType::Grid, .m_tile_width = 32, .m_tile_height = 32}, 800, 600));
+
+    renderer.draw(game);
 
     std::cout << "press a key to quit";
     std::cin.get();

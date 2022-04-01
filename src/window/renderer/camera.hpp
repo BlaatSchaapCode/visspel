@@ -23,7 +23,6 @@ class Camera {
     std::pair<int32_t, int32_t> translate(types::Point p) const;
     types::Point translate_inv(int32_t x, int32_t y) const;
 
-  private:
     const CameraConfig m_config;
     int32_t m_screen_x, m_screen_y;
     int32_t m_screen_w, m_screen_h;
