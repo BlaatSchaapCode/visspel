@@ -10,6 +10,7 @@ namespace t = types;
 
 namespace procgen {
 static void add_player(t::Game *game) {
+    (void)game; // silence unused parameter warning
     // TODO: Add players
     // TODO: Add player harbours
     // TODO: Add player ships
