@@ -21,6 +21,7 @@ enum class MessageType : uint16_t {
     Connection_Id = 0x01,
 };
 
+
 enum class MessageAction : uint8_t {
     Request_Get = 0x10,
     Request_Set = 0x11,

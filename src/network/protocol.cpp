@@ -116,6 +116,11 @@ void parse(std::vector<uint8_t> received_data, Connection *connection) {
             search->second(connection, *header, payload);
         } else {
             LOG_ERROR("Message Type Handler not registered");
+
+            // Is this desirable, a bad packet may bounce up and forth forever this way
+            // We should filter on MessageAction to be "(action & 0xF0) == 0x10"
+            // Can we keep using class enum and do such a thing?
+            send_status(connection, header->type, MessageStatus::ERROR_BAD_TYPE, header->id);
         }
 
         offset += header->size;
