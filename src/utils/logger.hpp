@@ -5,6 +5,9 @@
 #include <cstdio>
 #include <string_view>
 
+
+
+
 /*
  * How to use logging:
  * For logging we use printf like macro's.
@@ -42,10 +45,25 @@ enum class LogLevel {
 
 void log_impl2(LogLevel level, const char *file, int line, std::string_view msg);
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat-security"
+#endif
+// Clang (version 13.0.1) does not play nice with
+//		format __VA_OPT__(,)
+// in the LOG_ macros when there are no parameters to the log
+// That is exactly when __VA_OPT__(,) comes into play, to allow such
+// But then clang will errourously generate a
+//		error: format string is not a string literal (potentially insecure) [-Werror,-Wformat-security]
+// error, even though the format is a literal, it apparently gets confused by the __VA_OPT__
 inline void log_impl(LogLevel level, const char *file, int line, const char *format, auto... args) {
     const int MAX_BUFFER = 1024;
     char buffer[MAX_BUFFER];
     snprintf(buffer, MAX_BUFFER, format, args...);
     log_impl2(level, file, line, buffer);
 }
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+
 } // namespace utils::logger
