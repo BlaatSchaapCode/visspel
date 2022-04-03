@@ -64,7 +64,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-	<OutDir>out/</OutDir>
+    <OutDir>out/</OutDir>
     <TargetName>visspel_msvc_win32_$(Platform)_$(Configuration)</TargetName>
     <IntDir>bld/win32/msvc/$(Platform)/$(Configuration)/</IntDir>
   </PropertyGroup>
@@ -78,7 +78,9 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>platform/msvc/lib/$(Platform)/$(Configuration)/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem Condition="'$(Configuration)'=='Debug'">Console</SubSystem>
+      <SubSystem Condition="'$(Configuration)'=='Release'">Window</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -4,7 +4,7 @@
 
 namespace t = types;
 
-namespace window::renderer {
+namespace window {
 
 Camera::Camera(CameraConfig config, int32_t screen_w, int32_t screen_h) : m_config(config) { resize(screen_w, screen_h); }
 

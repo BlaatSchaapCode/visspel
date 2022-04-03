@@ -15,8 +15,8 @@
 #include "utils/logger.hpp"
 #include "utils/version.hpp"
 
-#include "window/renderer/camera.hpp"
-#include "window/renderer/sdl_renderer.hpp"
+#include "window/main_window.hpp"
+#include "window/game_scene.hpp"
 
 //#include <cxxopts.hpp>
 
@@ -60,7 +60,7 @@ int parse_options(int argc, char *argv[]) {
     }
 }
 
-namespace r = window::renderer;
+namespace r = window;
 
 int main(int argc, char *argv[]) {
     int result;
@@ -82,10 +82,13 @@ int main(int argc, char *argv[]) {
     LOG_INFO("Compiled using %s", version.m_compiler_full_name.c_str());
     LOG_INFO("Git branch %s commit %s", version.m_git_branch.c_str(), version.m_git_commit.c_str());
 
-    r::SDLRenderer renderer(
-        r::Camera(r::CameraConfig{.m_type = r::CameraType::Grid, .m_tile_width = 32, .m_tile_height = 32}, 800, 600));
+    r::MainWindow window = {};
+    window.set_scene(std::make_unique<r::GameScene>(std::move(game)));
 
-    renderer.draw(game);
+    while (true) {
+        window.draw();
+        Sleep(1);
+    }
 
     LOG_INFO("press a key to quit");
     std::cin.get();

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 #pragma once
 
-#include "../../types/point.hpp"
+#include "../types/point.hpp"
 #include <optional>
 #include <tuple>
 
-namespace window::renderer {
+namespace window {
 
 enum class CameraType { Isometric, Grid };
 
